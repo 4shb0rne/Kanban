@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../../styles/main.css";
 import { Link } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../util/firebase-config";
+import { Logout } from "../../controller/AuthController";
 export const Header = () => {
+    const [user] = useAuthState(auth);
+    useEffect(() => {
+        if (user) console.log("ALREADY LOG-IN");
+        else console.log("LOGOUT");
+      }, [user]);
     return (
         <header>
             <nav className="navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center w-full justify-between">
@@ -48,26 +55,6 @@ export const Header = () => {
                                     <Link to="/">Home</Link>
                                 </div>
                             </li>
-                            <li className="nav-item">
-                                <div
-                                    className="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
-                                    href="#!"
-                                    data-mdb-ripple="true"
-                                    data-mdb-ripple-color="light"
-                                >
-                                    <Link to="/login">Login</Link>
-                                </div>
-                            </li>
-                            <li className="nav-item">
-                                <div
-                                    className="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
-                                    href="#!"
-                                    data-mdb-ripple="true"
-                                    data-mdb-ripple-color="light"
-                                >
-                                    <Link to="/register">Register</Link>
-                                </div>
-                            </li>
                             <li className="nav-item mb-2 lg:mb-0">
                                 <div
                                     className="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
@@ -78,6 +65,44 @@ export const Header = () => {
                                     About
                                 </div>
                             </li>
+                            {!user && 
+                            <li className="nav-item">
+                                <div
+                                    className="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
+                                    href="#!"
+                                    data-mdb-ripple="true"
+                                    data-mdb-ripple-color="light"
+                                >
+                                    <Link to="/login">Login</Link>
+                                </div>
+                            </li>
+                            }
+                            {!user && 
+                            <li className="nav-item">
+                                <div
+                                    className="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
+                                    href="#!"
+                                    data-mdb-ripple="true"
+                                    data-mdb-ripple-color="light"
+                                >
+                                    <Link to="/register">Register</Link>
+                                </div>
+                            </li>
+                            }
+                            {user &&
+                            <li className="nav-item mb-2 lg:mb-0">
+                                <div
+                                    className="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
+                                    href="#!"
+                                    data-mdb-ripple="true"
+                                    data-mdb-ripple-color="light"
+                                >
+                                    <button onClick={async () => {
+                                        Logout()
+                                    }}>Logout</button>
+                                </div>
+                            </li>
+                            }
                         </ul>
                     </div>
                 </div>

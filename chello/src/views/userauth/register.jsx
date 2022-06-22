@@ -5,12 +5,13 @@ import {
     RegisterAuth,
     ValidateRegister,
 } from "../../controller/AuthController";
+
+import { AddUser } from '../../controller/UserController'
 export const Register = () => {
     let navigate = useNavigate();
     const [errorUsername, setErrorUsername] = useState("");
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
-    const [errorDOB, setErrorDOB] = useState("");
     return (
         <div className="w-full max-w-xs flex mt-20">
             <div className="bg-white shadow-md rounded p-10 mb-4">
@@ -51,23 +52,6 @@ export const Register = () => {
                         {errorEmail && errorEmail}
                     </div>
                 </div>
-
-                <div className="mb-4">
-                    <label
-                        className="block text-gray-700 text-sm font-bold mb-2"
-                        htmlFor="dob"
-                    >
-                        Date of birth
-                    </label>
-                    <input
-                        className={`shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${
-                            errorDOB && "border border-red-500"
-                        }`}
-                        id="dob"
-                        type="date"
-                    />
-                    <div className="text-red-600">{errorDOB && errorDOB}</div>
-                </div>
                 <div className="mb-4">
                     <label
                         className="block text-gray-700 text-sm font-bold mb-2"
@@ -97,20 +81,18 @@ export const Register = () => {
                             let email = document.getElementById("email").value;
                             let password =
                                 document.getElementById("password").value;
-                            let dob = document.getElementById("dob").value;
                             let messages = ValidateRegister(
                                 username,
                                 email,
                                 password,
-                                dob
                             );
                             setErrorUsername(messages["username"]);
                             setErrorEmail(messages["email"]);
                             setErrorPassword(messages["password"]);
-                            setErrorDOB(messages["dob"]);
                             if (Object.keys(messages).length == 0) {
                                 try {
                                     await RegisterAuth(email, password);
+                                    AddUser(username, email, password);
                                     navigate("/login");
                                 } catch (e) {
                                     console.log(e.message);

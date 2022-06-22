@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { LoginAuth } from "../../controller/AuthController";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
 export const Login = () => {
     let navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState("");

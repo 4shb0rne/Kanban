@@ -1,13 +1,10 @@
-import { useEffect, useState } from "react";
-import { login, register, logout } from "./controller/AuthController";
-import { onAuthStateChanged } from "firebase/auth";
 
 import "./styles/main.css";
 import { Route, Routes } from "react-router-dom";
-import { Login } from "./components/userauth/login";
-import { Register } from "./components/userauth/register";
-import { Layout } from "./components/main/layout";
-import { Home } from "./components/main/home";
+import { Login } from "./views/userauth/login";
+import { Register } from "./views/userauth/register";
+import { Layout } from "./views/main/layout";
+import { Home } from "./views/main/home";
 
 function App() {
     return (
