@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { LoginAuth } from "../../controller/AuthController";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
 export const Login = () => {
-    const [loginEmail, setLoginEmail] = useState("");
-    const [loginPassword, setLoginPassword] = useState("");
+    let navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("");
     return (
         <div className="w-full max-w-xs flex mt-20">
             <form className="bg-white shadow-md rounded p-10 mb-4">
@@ -29,22 +31,37 @@ export const Login = () => {
                         Password
                     </label>
                     <input
-                        className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                         id="password"
                         type="password"
                         placeholder="******************"
                     />
-                    <p className="text-red-500 text-xs italic">
-                        Please choose a password.
-                    </p>
                 </div>
                 <div className="flex items-center justify-between">
                     <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         type="button"
+                        onClick={async () => {
+                            let email = document.getElementById("email").value;
+                            let password =
+                                document.getElementById("password").value;
+                            try {
+                                await LoginAuth(email, password);
+
+                                navigate("/home");
+                            } catch (e) {
+                                console.log(e.message);
+                                setErrorMessage(
+                                    "Your email or password is not valid"
+                                );
+                            }
+                        }}
                     >
                         Sign In
                     </button>
+                </div>
+                <div className="text-red-500 text-xs italic mt-5">
+                    {errorMessage}
                 </div>
             </form>
         </div>
