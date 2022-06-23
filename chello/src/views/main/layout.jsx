@@ -4,7 +4,7 @@ export const Layout = (props) => {
     return (
         <div>
             <Header></Header>
-            <main className="flex justify-center">{props.children}</main>
+            <main>{props.children}</main>
         </div>
     );
 };
