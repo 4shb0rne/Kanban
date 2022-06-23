@@ -1,27 +1,41 @@
 import { db } from "../../util/firebase-config";
 import { BrowserRouter, Route } from "react-router-dom";
 import useBoards from "../../controller/BoardController";
-
+import { Logout } from "../../controller/UserController";
 import BoardList from "../components/BoardList";
-
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    where,
+    addDoc
+} from "firebase/firestore";
 import Kanban from "./kanban";
 
 import { v4 as uuidv4 } from "uuid";
 
 const Home = ({ logOut, userId, loginWithGoogle, name, isAnon }) => {
     const boards = useBoards(userId);
-
     const addNewBoard = (e) => {
-        // e.preventDefault()
-        // const uid = uuidv4()
+        e.preventDefault()
+        const docRef = addDoc(collection(db, "boards"), {
+            name: e.target.elements.boardName.value,
+            user:doc(db, "users", userId)
+        })
         // db.collection(`users/${userId}/boards`)
         //     .doc(uid)
         //     .set({name: e.target.elements.boardName.value})
-        // const columnOrder = {id: 'columnOrder', order: []}
+        const columnOrder = {id: 'columnOrder', order: []}
+        addDoc(collection(db, "lists"), {
+            columnOrder: columnOrder,
+            board:doc(db, "boards", docRef.uid)
+        })
         // db.collection(`users/${userId}/boards/${uid}/columns`)
         //     .doc('columnOrder')
         //     .set(columnOrder)
-        // e.target.elements.boardName.value = ''
+        e.target.elements.boardName.value = ''
     };
 
     const deleteBoard = (id) => {
@@ -31,11 +45,8 @@ const Home = ({ logOut, userId, loginWithGoogle, name, isAnon }) => {
     };
     console.log(boards);
     return boards !== null ? (
-        <>
-            {boards.map((b) => (
-                <div>{b.title}</div>
-            ))}
-        </>
+       
+        <BoardList boards={boards} logOut={Logout}></BoardList>
     ) : (
         // <BrowserRouter>
         //     <Route exact path="/">

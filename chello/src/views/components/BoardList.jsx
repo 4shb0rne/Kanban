@@ -30,12 +30,9 @@ const BoardList = ({ logOut, boards, addNewBoard, deleteBoard, name }) =>
                 </div>
             )
     }
-
-
-
     else return (
         <div className='bg-gradient-to-br from-white via-indigo-100 to-primary h-screen px-6 py-4 sm:py-20 sm:px-24'>
-            <Modal modal={modal} setModal={setModal} ariaText='Board Delete confirmation'>
+            {/* <Modal modal={modal} setModal={setModal} ariaText='Board Delete confirmation'>
                 <div className='md:px-12 '>
                     <div className='text-yellow-600 mb-2'>
                         <Exclaim />
@@ -47,7 +44,7 @@ const BoardList = ({ logOut, boards, addNewBoard, deleteBoard, name }) =>
                         <button className='bg-blue-800 text-gray-100 px-2 py-1 rounded-sm text-sm md:text-base' onClick={()=>setModal(false)}>No, go back</button>
                     </div>
                 </div>
-            </Modal>
+            </Modal> */}
             <div className='flex flex-col my-2'>
                 <div className='flex justify-between'>
                     <h1 className='text-xl sm:text-3xl bg-gradient-to-r from-indigo-500 to-primary bg-clip-text text-transparent'>Welcome, {name ? name.split(' ')[0] : 'Stranger'}</h1>
@@ -58,6 +55,7 @@ const BoardList = ({ logOut, boards, addNewBoard, deleteBoard, name }) =>
                     <div className="flex flex-wrap mt-2">
                         {boards.map(b => 
                             <div className='bg-white text-gray-700 mb-3 mr-4 py-4 px-6 rounded-sm shadow-md w-full sm:w-auto' key={b.id}>
+                            {b.title}
                                 <div className="flex items-center justify-between">
                                     <Link to={`/board/${b.id}`}><h2 className='text-lg sm:text-2xl text-gray-700 hover:text-gray-900'>{b.name}</h2></Link>
                                     <div onClick={() => openDeleteModal(b.id)} className='text-red-500 ml-6 cursor-pointer hover:text-red-700'>
