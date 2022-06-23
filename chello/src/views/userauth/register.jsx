@@ -2,11 +2,10 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+    AddUser,
     RegisterAuth,
     ValidateRegister,
-} from "../../controller/AuthController";
-
-import { AddUser } from "../../controller/UserController";
+} from "../../controller/UserController";
 export const Register = () => {
     let navigate = useNavigate();
     const [errorUsername, setErrorUsername] = useState("");

@@ -3,7 +3,7 @@ import "../../styles/main.css";
 import { Link } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../util/firebase-config";
-import { Logout } from "../../controller/AuthController";
+import { Logout } from "../../controller/UserController";
 export const Header = () => {
     const [user] = useAuthState(auth);
     useEffect(() => {

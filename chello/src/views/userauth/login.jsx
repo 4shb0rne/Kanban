@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { LoginAuth } from "../../controller/AuthController";
+import { LoginAuth } from "../../controller/UserController";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 export const Login = () => {
