@@ -6,7 +6,7 @@ import {
     ValidateRegister,
 } from "../../controller/AuthController";
 
-import { AddUser } from '../../controller/UserController'
+import { AddUser } from "../../controller/UserController";
 export const Register = () => {
     let navigate = useNavigate();
     const [errorUsername, setErrorUsername] = useState("");
@@ -84,16 +84,24 @@ export const Register = () => {
                             let messages = ValidateRegister(
                                 username,
                                 email,
-                                password,
+                                password
                             );
                             setErrorUsername(messages["username"]);
                             setErrorEmail(messages["email"]);
                             setErrorPassword(messages["password"]);
                             if (Object.keys(messages).length == 0) {
                                 try {
-                                    await RegisterAuth(email, password);
-                                    AddUser(username, email, password);
-                                    navigate("/login");
+                                    const u = await RegisterAuth(
+                                        email,
+                                        password
+                                    );
+                                    await AddUser(
+                                        u.user.uid,
+                                        username,
+                                        email,
+                                        password
+                                    );
+                                    navigate("/home");
                                 } catch (e) {
                                     console.log(e.message);
                                 }

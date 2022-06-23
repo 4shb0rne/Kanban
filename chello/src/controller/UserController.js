@@ -1,10 +1,16 @@
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, setDoc, doc } from "firebase/firestore";
 import { db } from "../util/firebase-config";
 
-export const AddUser = async (registerUsername, registerEmail, registerPassword) => {
-    await addDoc(collection(db, "users"), {
+export const AddUser = async (
+    uid,
+    registerUsername,
+    registerEmail,
+    registerPassword
+) => {
+    await setDoc(doc(db, "users", uid), {
         useremail: registerEmail,
         username: registerUsername,
-        userpassword: registerPassword
+        userpassword: registerPassword,
+        uid: uid,
     });
-}
+};
