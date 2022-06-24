@@ -1,3 +1,4 @@
+import { updateProfile } from "firebase/auth";
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -78,7 +79,8 @@ export const Register = () => {
                             onClick={async () => {
                                 let username =
                                     document.getElementById("username").value;
-                                let email = document.getElementById("email").value;
+                                let email =
+                                    document.getElementById("email").value;
                                 let password =
                                     document.getElementById("password").value;
                                 let messages = ValidateRegister(
@@ -95,13 +97,16 @@ export const Register = () => {
                                             email,
                                             password
                                         );
+                                        await updateProfile(u.user, {
+                                            displayName: username,
+                                        });
                                         await AddUser(
                                             u.user.uid,
                                             username,
                                             email,
                                             password
                                         );
-                                        navigate("/home");
+                                        navigate("/");
                                     } catch (e) {
                                         console.log(e.message);
                                     }

@@ -1,4 +1,4 @@
-import { collection, setDoc, doc } from "firebase/firestore";
+import { collection, setDoc, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../util/firebase-config";
 import {
     createUserWithEmailAndPassword,
@@ -18,6 +18,11 @@ export const AddUser = async (
         uid: uid,
     });
 };
+
+// export const getUsername = async (id) => {
+//     const docRef = doc(db, "users", id);
+//     return await getDoc(docRef);
+// };
 
 export const RegisterAuth = (registerEmail, registerPassword) => {
     return createUserWithEmailAndPassword(

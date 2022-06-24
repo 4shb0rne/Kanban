@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { db, firebase } from "../firebase/fbConfig";
+import { db } from "../../util/firebase-config";
 import { v4 as uuidv4 } from "uuid";
-import { addDoc, collection, doc, FieldValue, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    doc,
+    FieldValue,
+    serverTimestamp,
+    setDoc,
+} from "firebase/firestore";
 
 const AddTask = ({ boardId, userId, close, allCols }) => {
     const [description, setDescription] = useState(null);

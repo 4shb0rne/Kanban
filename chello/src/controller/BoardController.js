@@ -9,11 +9,11 @@ import {
 import { useState, useEffect } from "react";
 import { db } from "../util/firebase-config";
 
-const useBoards = (userId) => {
+const useBoards = (workspaceId) => {
     const [boards, setBoards] = useState(null);
 
     useEffect(() => {
-        const docRef = doc(db, "users", "mGD1nioLXrZN0JI1Px6jdgCg2623");
+        const docRef = doc(db, "workspaces", "Jt1PeMK3ESKCpDzmxLtH");
         getDoc(docRef).then((docSnap) => {
             try {
                 if (docSnap.exists()) {
@@ -21,7 +21,7 @@ const useBoards = (userId) => {
                     getDocs(
                         query(
                             collection(db, "boards"),
-                            where("user", "==", docSnap.ref)
+                            where("workspace", "==", docSnap.ref)
                         )
                     ).then((boardSnap) => {
                         const documents = [];
@@ -42,7 +42,7 @@ const useBoards = (userId) => {
         return () => {
             setBoards(null);
         };
-    }, [userId]);
+    }, [workspaceId]);
 
     return boards;
 };

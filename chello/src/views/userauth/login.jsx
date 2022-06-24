@@ -42,13 +42,13 @@ export const Login = () => {
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="button"
                             onClick={async () => {
-                                let email = document.getElementById("email").value;
+                                let email =
+                                    document.getElementById("email").value;
                                 let password =
                                     document.getElementById("password").value;
                                 try {
                                     await LoginAuth(email, password);
-
-                                    navigate("/home");
+                                    navigate("/");
                                 } catch (e) {
                                     console.log(e.message);
                                     setErrorMessage(
@@ -64,7 +64,7 @@ export const Login = () => {
                         {errorMessage}
                     </div>
                 </form>
-            </div>  
+            </div>
         </div>
     );
 };
