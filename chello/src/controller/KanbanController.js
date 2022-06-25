@@ -13,9 +13,9 @@ export const useKanban = (boardId) => {
   const [columns, setColumns] = useState(null);
   const [final, setFinal] = useState(null);
   const [boardName, setBoardName] = useState("");
-  useEffect(() => {
-    const docRef = doc(db, "boards", boardId);
 
+  const fetch_cards = () => {
+    const docRef = doc(db, "boards", boardId);
     getDoc(docRef).then((docSnap) => {
       try {
         if (docSnap.exists()) {
@@ -37,6 +37,17 @@ export const useKanban = (boardId) => {
         console.log(e);
       }
     });
+  };
+  const fetch_board_name = () => {
+    const docRef = doc(db, "boards", boardId);
+    getDoc(docRef).then((d) => {
+      if (d.exists()) {
+        setBoardName(d.data().name);
+      }
+    });
+  };
+  useEffect(() => {
+    fetch_cards();
     // return db
     //     .collection(`users/${userId}/boards/${boardId}/tasks`)
     //     .onSnapshot((snap) => {
@@ -52,12 +63,7 @@ export const useKanban = (boardId) => {
   }, [boardId]);
 
   useEffect(() => {
-    const docRef = doc(db, "boards", boardId);
-    getDoc(docRef).then((d) => {
-      if (d.exists()) {
-        setBoardName(d.data().name);
-      }
-    });
+    fetch_board_name();
     // return db
     //     .collection(`users/${userId}/boards`)
     //     .doc(boardId)
@@ -67,38 +73,40 @@ export const useKanban = (boardId) => {
       return setBoardName(null);
     };
   }, [boardId]);
-
-  useEffect(() => {
+  const fetch_lists = () => {
     const docRef = doc(db, "boards", boardId);
     getDoc(docRef).then((docSnap) => {
-        try {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                const q = query(collection(db, `boards/${boardId}/lists`));
-                const documents = [];
-                const snap = onSnapshot(q, (snapshots)=>{     
-                    snapshots.forEach((b)=>{
-                        documents.push({
-                            id: b.id,
-                            ...b.data(),
-                        });
-                    })
-                    setColumns(documents);
-                });
-            }
-        } catch (e) {
-            console.log(e);
+      try {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const q = query(collection(db, `boards/${boardId}/lists`));
+          const documents = [];
+          const snap = onSnapshot(q, (snapshots) => {
+            snapshots.forEach((b) => {
+              documents.push({
+                id: b.id,
+                ...b.data(),
+              });
+            });
+            setColumns(documents);
+          });
         }
+      } catch (e) {
+        console.log(e);
+      }
     });
+  };
+  useEffect(() => {
+    fetch_lists();
     return () => {
       setColumns(null);
     };
   }, [boardId]);
 
-  useEffect(() => {
+  const setFinalData = () => {
     if (tasks && columns) {
       const finalObject = {};
-      
+
       const co = columns.find((c) => c.id === "columnOrder");
       const cols = columns.filter((c) => c.id !== "columnOrder");
       finalObject.columnOrder = co?.order;
@@ -109,6 +117,17 @@ export const useKanban = (boardId) => {
 
       setFinal(finalObject);
     }
+  };
+
+  useEffect(() => {
+    setFinalData();
   }, [tasks, columns]);
-  return { initialData: final, setInitialData: setFinal, boardName };
+
+  const allFetch = () => {
+    fetch_cards();
+    fetch_board_name();
+    fetch_lists();
+    setFinalData();
+  };
+  return { initialData: final, setInitialData: setFinal, boardName, allFetch };
 };
