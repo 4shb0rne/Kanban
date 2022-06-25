@@ -2,7 +2,8 @@
 
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 import {Checked, Unchecked, Cross, Dragger} from './Icons'
-import {firebase, db} from '../../util/firebase-config'
+import { db } from '../../util/firebase-config'
+import firebase from "firebase/compat/app";
 import {useState, useRef} from 'react'
 import {v4 as uuidv4} from 'uuid';
 

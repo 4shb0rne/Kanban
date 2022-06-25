@@ -11,21 +11,30 @@ import {
     query,
     where,
     addDoc,
+    updateDoc,
+    setDoc,
     deleteDoc,
 } from "firebase/firestore";
 export const Board = ({ userId, name }) => {
     let workspaceId = useParams();
-    const boards = useBoards(workspaceId);
+    const boards = useBoards(workspaceId.workspaceId);
 
     const addNewBoard = async (e) => {
         e.preventDefault();
-        console.log(workspaceId);
-        const docRef = addDoc(collection(db, "boards"), {
+
+        const columnOrder = {id: 'columnOrder'}
+        await addDoc(collection(db, "boards"), {
             name: e.target.elements.boardName.value,
             user: doc(db, "users", userId),
             workspace: doc(db, "workspaces", workspaceId.workspaceId),
-        });
-        console.log(workspaceId);
+        }).then((board) => {
+            setDoc(doc(db, `boards/${board.id}/lists`, "columnOrder"),{
+                columnOrder:columnOrder,
+                order: []
+            });
+        })
+            
+        
         // db.collection(`users/${userId}/boards`)
         //     .doc(uid)
         //     .set({name: e.target.elements.boardName.value})

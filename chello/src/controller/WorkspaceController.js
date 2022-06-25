@@ -3,8 +3,6 @@ import {
     doc,
     getDoc,
     getDocs,
-    addDoc,
-    deleteDoc,
     query,
     where,
 } from "firebase/firestore";
@@ -15,7 +13,7 @@ const useWorkspaces = (userId) => {
     const [workspaces, setWorkspace] = useState(null);
 
     useEffect(() => {
-        const docRef = doc(db, "users", "mGD1nioLXrZN0JI1Px6jdgCg2623");
+        const docRef = doc(db, "users", userId);
         getDoc(docRef).then((docSnap) => {
             try {
                 if (docSnap.exists()) {

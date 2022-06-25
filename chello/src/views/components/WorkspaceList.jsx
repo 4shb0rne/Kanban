@@ -5,7 +5,7 @@ import Modal from "./Modal";
 import { Exclaim, Bin } from "./Icons";
 
 const WorkspaceList = ({
-    logOut,
+    LogOut,
     workspaces,
     addNewWorkspace,
     deleteWorkspace,

@@ -13,7 +13,7 @@ const useBoards = (workspaceId) => {
     const [boards, setBoards] = useState(null);
 
     useEffect(() => {
-        const docRef = doc(db, "workspaces", "Jt1PeMK3ESKCpDzmxLtH");
+        const docRef = doc(db, "workspaces", workspaceId);
         getDoc(docRef).then((docSnap) => {
             try {
                 if (docSnap.exists()) {

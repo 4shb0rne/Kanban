@@ -2,28 +2,26 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-import firebase from "firebase/compat/app";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 import { db } from "../../util/firebase-config";
 import { Link } from "react-router-dom";
-import Column from "../components/Column";
+import List from "../components/List";
 import Modal from "../components/Modal";
 import AddTask from "./AddTask";
 import { Add } from "../components/Icons";
 
-import useKanbanData from "../../controller/KanbanController";
+import { useKanban } from "../../controller/KanbanController";
 import { debounce } from "../../util/utils";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 
 const Kanban = ({ userId }) => {
     const { boardId } = useParams();
     const [modal, setModal] = useState(false);
-    const { initialData, setInitialData, boardName } = useKanbanData(
-        userId,
+    const { initialData, setInitialData, boardName } = useKanban(
         boardId
     );
-    const [filter, setFilter] = useState(null);
-    const filters = ["high", "medium", "low"];
-
     const onDragEnd = (result) => {
         const { destination, source, draggableId } = result;
 
@@ -54,14 +52,10 @@ const Kanban = ({ userId }) => {
 
                 setInitialData(newState);
 
-                const docRef = doc(db, "columns", startColumn.id);
-                updateDoc(docRef, {
-                    taskIds: newTaskIds,
-                    boardId: boardId,
+                const docRef = doc(db, `boards/${boardId}/lists`, startColumn.id);
+                setDoc(docRef, {
+                    taskIds: newTaskIds
                 });
-                // db.collection(`users/${userId}/boards/${boardId}/columns`)
-                //     .doc(startColumn.id)
-                //     .update({ taskIds: newTaskIds });
                 return;
             }
 
@@ -90,220 +84,155 @@ const Kanban = ({ userId }) => {
 
             setInitialData(newState);
 
-            const docRef = doc(db, "columns", newStart.id);
-            updateDoc(docRef, {
-                taskIds: startTaskIDs,
-                boardId: boardId,
+            const docRef = doc(db, `boards/${boardId}/lists`, newStart.id);
+            setDoc(docRef, {
+                taskIds: startTaskIDs
             });
-            // db.collection(`users/${userId}/boards/${boardId}/columns`)
-            //     .doc(newStart.id)
-            //     .update({ taskIds: startTaskIDs });
-            const docRef2 = doc(db, "columns", newFinish.id);
-            updateDoc(docRef2, {
-                taskIds: finishTaskIDs,
-                boardId: boardId,
+            const docRef2 = doc(db, `boards/${boardId}/lists`, newFinish.id);
+            setDoc(docRef2, {
+                taskIds: finishTaskIDs
             });
-            // db.collection(`users/${userId}/boards/${boardId}/columns`)
-            //     .doc(newFinish.id)
-            //     .update({ taskIds: finishTaskIDs });
         } else {
             const newColumnOrder = Array.from(initialData.columnOrder);
             newColumnOrder.splice(source.index, 1);
             newColumnOrder.splice(destination.index, 0, draggableId);
             setInitialData({ ...initialData, columnOrder: newColumnOrder });
-            const docRef = doc(db, "columns", "columnOrder");
-            updateDoc(docRef, {
+            const docRef = doc(db, `boards/${boardId}/lists`, "columnOrder");
+            setDoc(docRef, {
                 order: newColumnOrder,
             });
-            // db.collection(`users/${userId}/boards/${boardId}/columns`)
-            //     .doc("columnOrder")
-            //     .update({ order: newColumnOrder });
         }
     };
 
     const addCol = (e) => {
         e.preventDefault();
         const newColumnName = e.target.elements.newCol.value;
-        const docRef = doc(db, "columns", newColumnName);
-        updateDoc(docRef, {
+        const docRef = doc(db, `boards/${boardId}/lists`, newColumnName);
+        setDoc(docRef, {
             title: newColumnName,
-            taskIds: [],
+            taskIds: []
         });
-        // db.collection(`users/${userId}/boards/${boardId}/columns`)
-        //     .doc(newColumnName)
-        //     .set({ title: newColumnName, taskIds: [] });
-        const docRef2 = doc(db, "columns", "columnOrder");
+        const docRef2 = doc(db, `boards/${boardId}/lists`, "columnOrder");
         updateDoc(docRef2, {
             order: firebase.firestore.FieldValue.arrayUnion(newColumnName),
         });
-        // db.collection(`users/${userId}/boards/${boardId}/columns`)
-        //     .doc("columnOrder")
-        //     .update({
-        //         order: firebase.firestore.FieldValue.arrayUnion(newColumnName),
-        //     });
-
         e.target.elements.newCol.value = "";
     };
 
     const changeBoardName = debounce((ev) => {
         const docRef = doc(db, "boards", boardId);
-        updateDoc(docRef, {
+        setDoc(docRef, {
             name: ev,
         });
-        // db.collection(`users/${userId}/boards`)
-        //     .doc(boardId)
-        //     .update({ name: ev });
-    }, 7000);
+    }, 1000);
 
     return (
-        <>
-            {initialData ? (
-                <>
-                    <Modal
-                        modal={modal}
-                        setModal={setModal}
-                        ariaText="Add a new task"
-                    >
-                        <AddTask
-                            boardId={boardId}
-                            userId={userId}
-                            allCols={initialData.columnOrder}
-                            close={() => setModal(false)}
-                        />
-                    </Modal>
+      <>
+        {initialData ? (
+          <>
+            <Modal modal={modal} setModal={setModal} ariaText="Add a new task">
+              <AddTask
+                boardId={boardId}
+                userId={userId}
+                allCols={initialData.columnOrder}
+                close={() => setModal(false)}
+              />
+            </Modal>
 
-                    <main className="pb-2 h-screen w-screen">
-                        <div className="flex flex-col h-full">
-                            <header className="bg-white z-10 text-sm sm:text-base py-5 mx-3 md:mx-6">
-                                <div className="flex flex-wrap justify-between items-center">
-                                    <span className="text-xl">
-                                        <Link
-                                            to="/"
-                                            className="text-blue-800 hover:text-blue-500"
-                                        >
-                                            Boards{" "}
-                                        </Link>
-                                        <span className="">/</span>
-                                        <input
-                                            type="text"
-                                            defaultValue={boardName}
-                                            className="text-gray-800 ml-2 w-1/2 truncate"
-                                            onChange={(e) =>
-                                                changeBoardName(e.target.value)
-                                            }
-                                        />
-                                    </span>
-                                    <div className="flex flex-wrap items-center sm:space-x-9">
-                                        <div className="flex items-center mt-2 sm:mt-0 ">
-                                            <h3 className="text-gray-500 mr-2">
-                                                Show Priority:{" "}
-                                            </h3>
-                                            <div className="space-x-1 text-blue-900 flex bg-indigo-50 rounded-sm">
-                                                {/* {filters.map((f) => (
-                                                    <div
-                                                        key={f}
-                                                        className={`px-3  border-black py-1 hover:bg-blue-600 hover:text-blue-50 cursor-pointer capitalize ${
-                                                            filter === f
-                                                                ? "bg-blue-600 text-blue-50"
-                                                                : ""
-                                                        }`}
-                                                        onClick={() =>
-                                                            setFilter(
-                                                                f === "all"
-                                                                    ? null
-                                                                    : f
-                                                            )
-                                                        }
-                                                    >
-                                                        {f}
-                                                    </div>
-                                                ))}
-                                                {filter ? (
-                                                    <div
-                                                        className="px-2 py-1 cursor-pointer hover:text-blue-700 rounded-sm"
-                                                        onClick={() =>
-                                                            setFilter(null)
-                                                        }
-                                                    >
-                                                        All
-                                                    </div>
-                                                ) : null} */}
-                                            </div>
-                                        </div>
-                                        <div
-                                            className="text-white bg-gradient-to-br from-primary via-indigo-600 to-blue-600 transform hover:scale-110 transition-all duration-300 rounded-full p-2 sm:p-1 fixed bottom-6 right-6 sm:static"
-                                            onClick={() => setModal(true)}
-                                        >
-                                            <Add />
-                                        </div>
-                                    </div>
-                                </div>
-                            </header>
+            <main className="pb-2 h-screen w-screen">
+              <div className="flex flex-col h-full">
+                <header className="bg-white z-10 text-sm sm:text-base py-5 mx-3 md:mx-6">
+                  <div className="flex flex-wrap justify-between items-center">
+                    <span className="text-xl">
+                      <Link
+                        to="/"
+                        className="text-blue-800 hover:text-blue-500"
+                      >
+                        Boards{" "}
+                      </Link>
+                      <span className="">/</span>
+                      <input
+                        type="text"
+                        defaultValue={boardName}
+                        className="text-gray-800 ml-2 w-1/2 truncate"
+                        onChange={(e) => changeBoardName(e.target.value)}
+                      />
+                    </span>
+                    <div className="flex flex-wrap items-center sm:space-x-9">
+                      <div
+                        className="bg-gradient-to-br from-primary via-indigo-600 to-blue-600 transform hover:scale-110 transition-all duration-300 rounded-full p-2 sm:p-1 fixed bottom-6 right-6 sm:static"
+                        onClick={() => setModal(true)}
+                      >
+                        <Add />
+                      </div>
+                    </div>
+                  </div>
+                </header>
 
-                            <DragDropContext onDragEnd={onDragEnd}>
-                                <Droppable
-                                    droppableId="allCols"
-                                    type="column"
-                                    direction="horizontal"
-                                >
-                                    {(provided) => (
-                                        <div
-                                            {...provided.droppableProps}
-                                            ref={provided.innerRef}
-                                            className="grid overflow-x-auto h-full items-start pt-3 md:pt-2 mx-1 md:mx-6 auto-cols-220 md:auto-cols-270 grid-flow-col"
-                                            style={{ height: "90%" }}
-                                        >
-                                            {initialData?.columnOrder.map(
-                                                (col, i) => {
-                                                    const column =
-                                                        initialData?.columns[
-                                                            col
-                                                        ];
-                                                    const tasks =
-                                                        column.taskIds?.map(
-                                                            (t) => t
-                                                        );
-                                                    return (
-                                                        <Column
-                                                            column={column}
-                                                            tasks={tasks}
-                                                            allData={
-                                                                initialData
-                                                            }
-                                                            key={column.id}
-                                                            boardId={boardId}
-                                                            userId={userId}
-                                                            filterBy={filter}
-                                                            index={i}
-                                                        />
-                                                    );
-                                                }
-                                            )}
-                                            {provided.placeholder}
-                                            <form
-                                                onSubmit={addCol}
-                                                autoComplete="off"
-                                                className="ml-2"
-                                            >
-                                                <input
-                                                    maxLength="20"
-                                                    className="truncate bg-transparent placeholder-indigo-500 text-indigo-800 bg-indigo-50 px-2 outline-none py-1 rounded-sm ring-2 focus:ring-indigo-500"
-                                                    type="text"
-                                                    name="newCol"
-                                                    placeholder="Add a new column"
-                                                />
-                                            </form>
-                                        </div>
-                                    )}
-                                </Droppable>
-                            </DragDropContext>
-                        </div>
-                    </main>
-                </>
-            ) : (
-                <div className="spinner h-screen w-screen" />
-            )}
-        </>
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable
+                    droppableId="allCols"
+                    type="column"
+                    direction="horizontal"
+                  >
+                    {(provided) => (
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="grid overflow-x-auto h-full items-start pt-3 md:pt-2 mx-1 md:mx-6 auto-cols-220 md:auto-cols-270 grid-flow-col"
+                        style={{ height: "90%" }}
+                      >
+                        {initialData?.columnOrder.map((col, i) => {
+                          const column = initialData?.columns[col];
+                          const tasks = column.taskIds?.map((t) => t);
+                          return (
+                            <List
+                              column={column}
+                              tasks={tasks}
+                              allData={initialData}
+                              key={column.id}
+                              boardId={boardId}
+                              userId={userId}
+                              index={i}
+                            />
+                          );
+                        })}
+                        {provided.placeholder}
+                        <form
+                          onSubmit={addCol}
+                          autoComplete="off"
+                          className="ml-2"
+                        >
+                          <input
+                            maxLength="20"
+                            className="truncate placeholder-indigo-500 text-indigo-800 bg-indigo-50 px-2 outline-none py-1 rounded-sm ring-2 focus:ring-indigo-500"
+                            type="text"
+                            name="newCol"
+                            placeholder="Add a new column"
+                          />
+                        </form>
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              </div>
+            </main>
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <div className="lds-roller">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        )}
+      </>
     );
 };
 

@@ -1,4 +1,4 @@
-import { db } from "./firebase-config";
+
 
 export const debounce = (callback, wait) => {
     let timeoutId = null;

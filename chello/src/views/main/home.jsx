@@ -14,8 +14,11 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import useWorkspaces from "../../controller/WorkspaceController";
 import WorkspaceList from "../components/WorkspaceList";
+import { Login } from '../userauth/login'
 const Home = ({ userId, name }) => {
+    
     const workspaces = useWorkspaces(userId);
+
     const [user] = useAuthState(auth);
     const addWorkspace = async (e) => {
         e.preventDefault();
@@ -35,13 +38,17 @@ const Home = ({ userId, name }) => {
         //     .delete()
         await deleteDoc(doc(db, "workspaces", id));
     };
+    console.log("HOME : " + user);
 
+    if(!user){
+        return <Login></Login>
+    }
     return workspaces !== null ? (
         <div>
             {user ? (
                 <WorkspaceList
                     workspaces={workspaces}
-                    logOut={Logout}
+                    LogOut={Logout}
                     name={name}
                     addNewWorkspace={addWorkspace}
                     deleteWorkspace={deleteWorkspace}
@@ -63,8 +70,6 @@ const Home = ({ userId, name }) => {
                 <div></div>
             </div>
         </div>
-
-        // return <div className="spinner h-screen w-screen">{boards && "as"}</div>;
     );
 };
 

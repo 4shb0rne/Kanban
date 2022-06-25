@@ -10,41 +10,46 @@ import { auth } from "./util/firebase-config";
 import { Board } from "./views/main/Board";
 
 function App() {
-    const [user] = useAuthState(auth);
-    return (
-        <Layout>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        user ? (
-                            <Home
-                                userId={user.uid}
-                                name={user.displayName}
-                            ></Home>
-                        ) : (
-                            <Home userId={""} name={""}></Home>
-                        )
-                    }
-                ></Route>
-                <Route
-                    path="/workspace/:workspaceId"
-                    element={
-                        <Board
-                            userId={"mGD1nioLXrZN0JI1Px6jdgCg2623"}
-                            name={"Ashborne"}
-                        ></Board>
-                    }
-                ></Route>
-                <Route
-                    path="/board/:boardId"
-                    element={<Kanban userId={"mGD1nioLXrZN0JI1Px6jdgCg2623"} />}
-                ></Route>
-                <Route path="/login" element={<Login></Login>} />
-                <Route path="/register" element={<Register></Register>} />
-            </Routes>
-        </Layout>
-    );
+  const [user] = useAuthState(auth);
+
+  return (
+    <Layout>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            user ? (
+              <Home userId={user.uid} name={user.displayName}></Home>
+            ) : (
+              <Home userId={"empty"} name={"empty"}></Home>
+            )
+          }
+        ></Route>
+        <Route
+          path="/workspace/:workspaceId"
+          element={
+            user ? (
+              <Board userId={user.uid} name={user.displayName}></Board>
+            ) : (
+              <Board userId="" name=""></Board>
+            )
+          }
+        ></Route>
+        <Route
+          path="/board/:boardId"
+          element={
+            user ? (
+              <Kanban userId={user.uid}></Kanban>
+            ) : (
+              <Kanban userId="test"></Kanban>
+            )
+          }
+        ></Route>
+        <Route path="/login" element={<Login></Login>} />
+        <Route path="/register" element={<Register></Register>} />
+      </Routes>
+    </Layout>
+  );
 }
 
 export default App;

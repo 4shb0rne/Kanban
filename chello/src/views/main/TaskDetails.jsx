@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Checklist from "../components/Checklist";
-import { db, firebase } from "../firebase/fbConfig";
-import { extractPriority } from "../utils";
+import { db } from '../../util/firebase-config'
+import firebase from "firebase/compat/app";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 
@@ -210,7 +210,6 @@ const TaskDetails = ({
                                         Low
                                     </option>
                                 </select>
-                                {extractPriority(taskDetails.priority)}
                             </div>
                         </div>
 

@@ -47,7 +47,8 @@ export const Login = () => {
                                 let password =
                                     document.getElementById("password").value;
                                 try {
-                                    await LoginAuth(email, password);
+                                    const login = await LoginAuth(email, password);
+                                    console.log(login.user.displayName);
                                     navigate("/");
                                 } catch (e) {
                                     console.log(e.message);

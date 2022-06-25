@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { db } from "../../util/firebase-config";
-import { v4 as uuidv4 } from "uuid";
 import {
     addDoc,
     collection,
@@ -8,39 +7,32 @@ import {
     FieldValue,
     serverTimestamp,
     setDoc,
+    updateDoc
 } from "firebase/firestore";
-
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 const AddTask = ({ boardId, userId, close, allCols }) => {
     const [description, setDescription] = useState(null);
 
-    const addTask = (e) => {
+    const addTask = async(e) => {
         e.preventDefault();
-
-        const uid = uuidv4();
         const title = e.target.elements.newTaskTitle.value;
         const priority = e.target.elements.priority.value;
         const column = e.target.elements.column.value;
 
-        addDoc(collection(db, "cards"), {
+        await addDoc(collection(db, `boards/${boardId}/cards`), {
             title,
             priority,
             description,
             todos: [],
             dateAdded: serverTimestamp(),
+        }).then((card)=>{
+            console.log(column);
+            updateDoc(doc(db, `boards/${boardId}/lists`, column),{
+                taskIds: firebase.firestore.FieldValue.arrayUnion(card.id),
+            })
         });
-
-        // db.collection(`users/${userId}/boards/${boardId}/tasks`).doc(uid).set({
-        //     title,
-        //     priority,
-        //     description,
-        //     todos: [],
-        //     dateAdded: firebase.firestore.FieldValue.serverTimestamp(),
-        // });
-
-        // db.collection(`users/${userId}/boards/${boardId}/columns`)
-        //     .doc(column)
-        //     .update({ taskIds: firebase.firestore.FieldValue.arrayUnion(uid) });
-
         close();
     };
 

@@ -6,10 +6,6 @@ import { auth } from "../../util/firebase-config";
 import { Logout } from "../../controller/UserController";
 export const Header = () => {
     const [user] = useAuthState(auth);
-    useEffect(() => {
-        if (user) console.log(user.email);
-        else console.log("LOGOUT");
-    }, [user]);
     return (
         <header>
             <nav className="navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center w-full justify-between">
@@ -53,16 +49,6 @@ export const Header = () => {
                                     data-mdb-ripple-color="light"
                                 >
                                     <Link to="/">Home</Link>
-                                </div>
-                            </li>
-                            <li className="nav-item mb-2 lg:mb-0">
-                                <div
-                                    className="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
-                                    href="#!"
-                                    data-mdb-ripple="true"
-                                    data-mdb-ripple-color="light"
-                                >
-                                    About
                                 </div>
                             </li>
                             {!user && (
