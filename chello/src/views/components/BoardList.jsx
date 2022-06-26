@@ -1,14 +1,8 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-
-import Modal from "./Modal";
-import { Exclaim, Bin } from "./Icons";
+import { Bin } from "./Icons";
 
 const BoardList = ({ logOut, boards, addNewBoard, deleteBoard, name }) => {
-  const [modal, setModal] = useState(false);
-
   const removeBoard = (id) => {
-    setModal(false);
     deleteBoard(id);
   };
   return (
@@ -25,9 +19,9 @@ const BoardList = ({ logOut, boards, addNewBoard, deleteBoard, name }) => {
           className="my-4 sm:my-8"
         >
           <label htmlFor="boardName" className="block text-xl text-blue-900">
-            Make a new board
+            Insert new board
           </label>
-          <div className="flex items-center mt-2">
+          <div className="mt-2">
             <input
               required
               type="text"
@@ -35,12 +29,14 @@ const BoardList = ({ logOut, boards, addNewBoard, deleteBoard, name }) => {
               className="bg-transparent border border-gray-500 px-2 py-1 rounded-sm placeholder-gray-700"
               placeholder="Enter a board name"
             />
-            <button
-              type="submit"
-              className="bg-green-600 hover:bg-green-900 text-green-50  rounded-sm px-2 py-1.5"
-            >
-              Add
-            </button>
+            <div className="mt-2">
+              <button
+                type="submit"
+                className="bg-green-600 hover:bg-green-900 text-green-50  rounded-sm px-12 py-2"
+              >
+                Add
+              </button>
+            </div>
           </div>
         </form>
         <div className="my-12">

@@ -4,9 +4,7 @@ import {
   addDoc,
   collection,
   doc,
-  FieldValue,
   serverTimestamp,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import firebase from "firebase/compat/app";
@@ -22,7 +20,6 @@ const AddTask = ({ boardId, userId, close, allCols, allFetch }) => {
 
     await addDoc(collection(db, `boards/${boardId}/cards`), {
       title,
-      priority: "",
       description,
       todos: [],
       dateAdded: serverTimestamp(),

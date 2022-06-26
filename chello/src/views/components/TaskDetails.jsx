@@ -1,10 +1,10 @@
 import { useState } from "react";
-import Checklist from "../components/Checklist";
+import Checklist from "./Checklist";
 import { db } from "../../util/firebase-config";
 import firebase from "firebase/compat/app";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
-import Modal from "../components/Modal";
+import Modal from "./Modal";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 const TaskDetails = ({
   taskDetails,
@@ -15,36 +15,25 @@ const TaskDetails = ({
   allFetch,
 }) => {
   const [updatedTitle, setTitle] = useState(taskDetails.title);
-  const [updatedPriority, setPriority] = useState(taskDetails.priority);
   const [updatedDesc, setNewDesc] = useState(taskDetails.description);
   const [modal, setModal] = useState(false);
 
   const [editing, setEditing] = useState(false);
 
-  const updateCard = (e) => {
+  const updateCard = async (e) => {
     e.preventDefault();
     closeModal();
-    db.collection(`users/${userId}/boards/${boardId}/tasks`)
-      .doc(taskDetails.id)
-      .update({
-        title: updatedTitle,
-        priority: updatedPriority,
-        description: updatedDesc,
-      });
+    const docRef = doc(db, `boards/${boardId}/cards`, taskDetails.id);
+    await updateDoc(docRef, {
+      title: updatedTitle,
+      description: updatedDesc,
+    });
+    allFetch();
   };
 
   const deleteCard = async (e) => {
     setModal(false);
     closeModal();
-    // db.collection(`users/${userId}/boards/${boardId}/columns`)
-    //   .doc(columnDetails.id)
-    //   .update({
-    //     taskIds: firebase.firestore.FieldValue.arrayRemove(taskDetails.id),
-    //   });
-    // db.collection(`users/${userId}/boards/${boardId}/tasks`)
-    //   .doc(taskDetails.id)
-    //   .delete();
-
     const docRef = doc(db, `boards/${boardId}/lists`, columnDetails.id);
     await updateDoc(docRef, {
       taskIds: firebase.firestore.FieldValue.arrayRemove(taskDetails.id),
@@ -104,7 +93,6 @@ const TaskDetails = ({
         </div>
 
         <div className="lg:grid lg:grid-cols-8 gap-x-20 w-full">
-          {/* First column */}
           <div className="col-span-6 mt-12">
             <div>
               <label className="text-gray-500 uppercase tracking-wide text-xs sm:text-sm  block">
@@ -115,6 +103,7 @@ const TaskDetails = ({
                 taskId={taskDetails.id}
                 boardId={boardId}
                 userId={userId}
+                allFetch={allFetch}
               />
             </div>
 
@@ -142,21 +131,6 @@ const TaskDetails = ({
                     </div>
                   </div>
                 </div>
-
-                <div className="mt-6">
-                  <label
-                    className="text-gray-500 uppercase tracking-wide text-xs sm:text-sm block"
-                    htmlFor="desc"
-                  >
-                    Live Preview:
-                  </label>
-                  <ReactMarkdown
-                    plugins={[gfm]}
-                    className="border border-gray-200 px-2 py-3 overflow-y-auto leading-normal  prose text-sm sm:text-base leading-tight text-gray-900"
-                  >
-                    {updatedDesc}
-                  </ReactMarkdown>
-                </div>
               </div>
 
               <div
@@ -182,35 +156,7 @@ const TaskDetails = ({
             </div>
           </div>
 
-          {/* Second column */}
           <div className="col-span-2 mt-12">
-            <div className="">
-              <label
-                className="text-gray-500 uppercase tracking-wide text-xs sm:text-sm  block"
-                htmlFor="title"
-              >
-                Priority:
-              </label>
-              <div className="flex items-center">
-                <select
-                  name="priority"
-                  defaultValue={taskDetails.priority}
-                  className="select"
-                  onChange={(e) => setPriority(e.target.value)}
-                >
-                  <option className="option" value="high">
-                    High
-                  </option>
-                  <option className="option" value="medium">
-                    Medium
-                  </option>
-                  <option className="option" value="low">
-                    Low
-                  </option>
-                </select>
-              </div>
-            </div>
-
             {taskDetails.dateAdded ? (
               <div className="mt-12">
                 <label
@@ -230,12 +176,9 @@ const TaskDetails = ({
             ) : null}
           </div>
         </div>
-
-        {/* Buttons */}
         <div className="my-12 flex justify-end w-full text-sm sm:text-base">
           {taskDetails.description !== updatedDesc ||
-          taskDetails.title !== updatedTitle ||
-          taskDetails.priority !== updatedPriority ? (
+          taskDetails.title !== updatedTitle ? (
             <div className="bg-green-700 text-white px-2 py-1 rounded-sm transform hover:-translate-y-1 transition-transform duration-300">
               <button className="cursor-pointer" type="submit">
                 Save changes

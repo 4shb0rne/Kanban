@@ -41,7 +41,7 @@ function App() {
             user ? (
               <Kanban userId={user.uid}></Kanban>
             ) : (
-              <Kanban userId="test"></Kanban>
+              <Kanban userId="empty"></Kanban>
             )
           }
         ></Route>

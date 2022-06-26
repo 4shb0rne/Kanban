@@ -1,24 +1,14 @@
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import Task from "./Task";
 
-import { Bin, Exclaim } from "./Icons";
+import { Bin } from "./Icons";
 
 import firebase from "firebase/compat/app";
 import { db } from "../../util/firebase-config";
 import { debounce } from "../../util/utils";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-const List = ({
-  column,
-  tasks,
-  allData,
-  boardId,
-  userId,
-  filterBy,
-  index,
-  allFetch,
-}) => {
-  const [editingCol, setEditing] = useState(false);
+const List = ({ column, tasks, allData, boardId, userId, index, allFetch }) => {
   const colInput = useRef(null);
 
   const deleteCol = (colId, tasks) => {
@@ -63,7 +53,6 @@ const List = ({
                 <input
                   ref={colInput}
                   className={`sm:text-xl text-white text-lg px-2 w-10/12 bg-blue-700`}
-                  onBlur={() => setEditing(false)}
                   type="text"
                   defaultValue={column.id}
                   onChange={(e) => changeColName(e, column.id)}
@@ -95,7 +84,6 @@ const List = ({
                         boardId={boardId}
                         userId={userId}
                         columnDetails={column}
-                        filterBy={filterBy}
                         allFetch={allFetch}
                       />
                     ))}

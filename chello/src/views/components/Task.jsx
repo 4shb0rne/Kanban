@@ -2,7 +2,7 @@ import { Draggable } from "react-beautiful-dnd";
 import ChecklistProgress from "./ChecklistProgress";
 
 import Modal from "./Modal";
-import TaskDetails from "../main/TaskDetails";
+import TaskDetails from "./TaskDetails";
 import { Description } from "./Icons";
 import { useState } from "react";
 
