@@ -1,27 +1,3 @@
-export const Medium = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="21">
-    <path fill="none" d="M0 0h24v24H0z" />
-    <path
-      d="M13.05 12.36l-5.656 5.658-1.414-1.415 5.657-5.656-4.95-4.95H18V17.31z"
-      fill="rgba(204,135,26,1)"
-    />
-  </svg>
-);
-
-export const High = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="21">
-    <path fill="none" d="M0 0h24v24H0z" />
-    <path d="M13 12v8h-2v-8H4l8-8 8 8z" fill="rgba(201,28,28,1)" />
-  </svg>
-);
-
-export const Low = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="21">
-    <path fill="none" d="M0 0h24v24H0z" />
-    <path d="M13 12h7l-8 8-8-8h7V4h2z" fill="rgba(22,156,31,1)" />
-  </svg>
-);
-
 export const Unchecked = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -61,35 +37,6 @@ export const CheckedOutline = () => (
   >
     <path fill="none" d="M0 0h24v24H0z" />
     <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z" />
-  </svg>
-);
-
-export const More = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="fill-current block"
-    viewBox="0 0 24 24"
-    width="20"
-  >
-    <path fill="none" d="M0 0h24v24H0z" />
-    <path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-  </svg>
-);
-
-export const Exclaim = () => (
-  <svg
-    width="38"
-    viewBox="0 0 24 24"
-    className="stroke-current"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
   </svg>
 );
 
@@ -176,16 +123,5 @@ export const Save = () => (
       d="M6.94 14.036c-.233.624-.43 1.2-.606 1.783.96-.697 2.101-1.139 3.418-1.304 2.513-.314 4.746-1.973 5.876-4.058l-1.456-1.455 1.413-1.415 1-1.001c.43-.43.915-1.224 1.428-2.368-5.593.867-9.018 4.292-11.074 9.818zM17 9.001L18 10c-1 3-4 6-8 6.5-2.669.334-4.336 2.167-5.002 5.5H3C4 16 6 2 21 2c-1 2.997-1.998 4.996-2.997 5.997L17 9.001z"
       fill="white"
     />
-  </svg>
-);
-
-export const Dragger = () => (
-  <svg
-    className="fill-current"
-    xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    viewBox="0 0 16 16"
-  >
-    <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
   </svg>
 );

@@ -15,24 +15,15 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import useWorkspaces from "../../controller/WorkspaceController";
 import WorkspaceList from "../components/WorkspaceList";
 import { Login } from "../userauth/login";
+import {
+  addWorkspace,
+  deleteWorkspace,
+} from "../../controller/WorkspaceController";
 const Home = ({ userId, name }) => {
   const [workspaces, fetchWorkspaces] = useWorkspaces(userId);
 
   const [user] = useAuthState(auth);
-  const addWorkspace = async (e) => {
-    e.preventDefault();
-    const docRef = await addDoc(collection(db, "workspaces"), {
-      name: e.target.elements.workspaceName.value,
-      user: doc(db, "users", userId),
-    });
-    e.target.elements.workspaceName.value = "";
-    fetchWorkspaces();
-  };
 
-  const deleteWorkspace = async (id) => {
-    await deleteDoc(doc(db, "workspaces", id));
-    fetchWorkspaces();
-  };
   if (!user) {
     return <Login></Login>;
   }
@@ -41,10 +32,11 @@ const Home = ({ userId, name }) => {
       {user ? (
         <WorkspaceList
           workspaces={workspaces}
-          LogOut={Logout}
           name={name}
           addNewWorkspace={addWorkspace}
           deleteWorkspace={deleteWorkspace}
+          fetchWorkspaces={fetchWorkspaces}
+          userId={userId}
         ></WorkspaceList>
       ) : (
         <>PLS LOGIN</>

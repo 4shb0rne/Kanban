@@ -5,9 +5,26 @@ import {
   getDocs,
   query,
   where,
+  addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../util/firebase-config";
+
+export const addWorkspace = async (e, userId, fetchWorkspaces) => {
+  e.preventDefault();
+  const docRef = await addDoc(collection(db, "workspaces"), {
+    name: e.target.elements.workspaceName.value,
+    user: doc(db, "users", userId),
+  });
+  e.target.elements.workspaceName.value = "";
+  fetchWorkspaces();
+};
+
+export const deleteWorkspace = async (id, fetchWorkspaces) => {
+  await deleteDoc(doc(db, "workspaces", id));
+  fetchWorkspaces();
+};
 
 const useWorkspaces = (userId) => {
   const [workspaces, setWorkspace] = useState(null);
