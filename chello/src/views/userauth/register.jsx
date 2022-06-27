@@ -107,6 +107,7 @@ export const Register = () => {
                                             password
                                         );
                                         navigate("/");
+                                        window.location.reload();
                                     } catch (e) {
                                         console.log(e.message);
                                     }

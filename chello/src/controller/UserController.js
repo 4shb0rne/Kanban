@@ -5,6 +5,7 @@ import {
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
+
 export const AddUser = async (
     uid,
     registerUsername,
