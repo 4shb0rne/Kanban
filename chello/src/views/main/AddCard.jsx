@@ -1,41 +1,16 @@
 import { useState } from "react";
-import { db } from "../../util/firebase-config";
-import {
-    addDoc,
-    collection,
-    doc,
-    serverTimestamp,
-    updateDoc,
-} from "firebase/firestore";
-import firebase from "firebase/compat/app";
+import { addCard } from "../../controller/CardController";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-const AddCard = ({ boardId, userId, close, allCols, allFetch }) => {
+const AddCard = ({ boardId, userId, close, col, allFetch }) => {
     const [description, setDescription] = useState(null);
-
-    const addCard = async (e) => {
-        e.preventDefault();
-        const title = e.target.elements.newTaskTitle.value;
-        const column = e.target.elements.column.value;
-
-        await addDoc(collection(db, `boards/${boardId}/cards`), {
-            title,
-            description,
-            todos: [],
-            dateAdded: serverTimestamp(),
-        }).then((card) => {
-            console.log(column);
-            updateDoc(doc(db, `boards/${boardId}/lists`, column), {
-                taskIds: firebase.firestore.FieldValue.arrayUnion(card.id),
-            });
-        });
-        close();
-        window.location.reload();
-    };
 
     return (
         <div className="px-3 py-2 md:px-12  text-sm md:text-base">
-            <form onSubmit={addCard} autoComplete="off">
+            <form
+                onSubmit={(e) => addCard(e, col, description, boardId, close)}
+                autoComplete="off"
+            >
                 <h4 className="text-lg sm:text-2xl text-gray-800">
                     Add a Card
                 </h4>
@@ -62,23 +37,9 @@ const AddCard = ({ boardId, userId, close, allCols, allFetch }) => {
                                 className="text-gray-500 block sm:inline"
                                 htmlFor="column"
                             >
-                                Select a List:{" "}
+                                Selected List : {""}
                             </label>
-                            <select
-                                name="column"
-                                required
-                                className="select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-dark dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            >
-                                {allCols.map((c) => (
-                                    <option
-                                        className="option"
-                                        value={c}
-                                        key={c}
-                                    >
-                                        {c}
-                                    </option>
-                                ))}
-                            </select>
+                            <label>{col}</label>
                         </div>
                     </div>
                 </div>

@@ -8,16 +8,12 @@ import "firebase/compat/firestore";
 import { db } from "../../util/firebase-config";
 import { Link } from "react-router-dom";
 import List from "../components/List";
-import Modal from "../components/Modal";
-import AddCard from "./AddCard";
-
 import { useKanban, addCol } from "../../controller/KanbanController";
 import { debounce } from "../../util/utils";
 import { doc, setDoc } from "firebase/firestore";
 
 const Kanban = ({ userId }) => {
     const { boardId } = useParams();
-    const [modal, setModal] = useState(false);
     const { initialData, setInitialData, boardName, allFetch } =
         useKanban(boardId);
     const onDragEnd = (result) => {
@@ -117,20 +113,6 @@ const Kanban = ({ userId }) => {
         <>
             {initialData ? (
                 <>
-                    <Modal
-                        modal={modal}
-                        setModal={setModal}
-                        ariaText="Add a new task"
-                    >
-                        <AddCard
-                            boardId={boardId}
-                            userId={userId}
-                            allCols={initialData.columnOrder}
-                            close={() => setModal(false)}
-                            allFetch={allFetch}
-                        />
-                    </Modal>
-
                     <main className="pb-2 h-screen w-screen">
                         <div className="flex flex-col h-full">
                             <header className="bg-white text-sm sm:text-base py-5 mx-3 md:mx-6">
@@ -154,20 +136,6 @@ const Kanban = ({ userId }) => {
                                     </span>
                                 </div>
                             </header>
-                            <div className="flex flex-wrap items-center sm:space-x-9 ml-5">
-                                <div
-                                    className="bg-gradient-to-br from-primary via-indigo-600 to-blue-600 transform hover:scale-110 transition-all duration-300 rounded-full p-2 sm:p-1 fixed bottom-6 right-6 sm:static"
-                                    onClick={() => setModal(true)}
-                                >
-                                    <button
-                                        className="px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 
-                      hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 
-                      ease-in-out"
-                                    >
-                                        Add Card
-                                    </button>
-                                </div>
-                            </div>
                             <DragDropContext onDragEnd={onDragEnd}>
                                 <Droppable
                                     droppableId="allCols"
