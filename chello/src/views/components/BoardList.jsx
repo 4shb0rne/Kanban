@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
 import { Bin } from "./Icons";
 
-const BoardList = ({ logOut, boards, addNewBoard, deleteBoard, name }) => {
+const BoardList = ({
+    logOut,
+    boards,
+    addNewBoard,
+    deleteBoard,
+    name,
+    fetchBoards,
+    userId,
+    workspaceId,
+}) => {
     const removeBoard = (id) => {
         deleteBoard(id);
     };
@@ -14,7 +23,9 @@ const BoardList = ({ logOut, boards, addNewBoard, deleteBoard, name }) => {
                     </h1>
                 </div>
                 <form
-                    onSubmit={addNewBoard}
+                    onSubmit={(e) =>
+                        addNewBoard(e, fetchBoards, userId, workspaceId)
+                    }
                     autoComplete="off"
                     className="my-4 sm:my-8"
                 >

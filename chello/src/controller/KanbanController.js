@@ -7,7 +7,13 @@ import {
     getDocs,
     query,
     onSnapshot,
+    setDoc,
+    updateDoc,
 } from "firebase/firestore";
+
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 import { debounce } from "../util/utils";
 export const useKanban = (boardId) => {
     const [tasks, setTasks] = useState(null);
@@ -122,4 +128,20 @@ export const useKanban = (boardId) => {
         boardName,
         allFetch,
     };
+};
+
+export const addCol = (e, boardId, allFetch) => {
+    e.preventDefault();
+    const newColumnName = e.target.elements.newCol.value;
+    const docRef = doc(db, `boards/${boardId}/lists`, newColumnName);
+    setDoc(docRef, {
+        title: newColumnName,
+        taskIds: [],
+    });
+    const docRef2 = doc(db, `boards/${boardId}/lists`, "columnOrder");
+    updateDoc(docRef2, {
+        order: firebase.firestore.FieldValue.arrayUnion(newColumnName),
+    });
+    e.target.elements.newCol.value = "";
+    allFetch();
 };

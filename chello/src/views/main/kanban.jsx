@@ -11,9 +11,9 @@ import List from "../components/List";
 import Modal from "../components/Modal";
 import AddCard from "./AddCard";
 
-import { useKanban } from "../../controller/KanbanController";
+import { useKanban, addCol } from "../../controller/KanbanController";
 import { debounce } from "../../util/utils";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 const Kanban = ({ userId }) => {
     const { boardId } = useParams();
@@ -104,21 +104,6 @@ const Kanban = ({ userId }) => {
                 order: newColumnOrder,
             });
         }
-    };
-    const addCol = (e) => {
-        e.preventDefault();
-        const newColumnName = e.target.elements.newCol.value;
-        const docRef = doc(db, `boards/${boardId}/lists`, newColumnName);
-        setDoc(docRef, {
-            title: newColumnName,
-            taskIds: [],
-        });
-        const docRef2 = doc(db, `boards/${boardId}/lists`, "columnOrder");
-        updateDoc(docRef2, {
-            order: firebase.firestore.FieldValue.arrayUnion(newColumnName),
-        });
-        e.target.elements.newCol.value = "";
-        allFetch();
     };
 
     const changeBoardName = debounce((ev) => {
@@ -224,7 +209,9 @@ const Kanban = ({ userId }) => {
                                             )}
                                             {provided.placeholder}
                                             <form
-                                                onSubmit={addCol}
+                                                onSubmit={(e) =>
+                                                    addCol(e, boardId, allFetch)
+                                                }
                                                 autoComplete="off"
                                                 className="ml-2"
                                             >
