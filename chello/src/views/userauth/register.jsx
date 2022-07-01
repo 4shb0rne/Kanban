@@ -110,6 +110,7 @@ export const Register = () => {
                                         window.location.reload();
                                     } catch (e) {
                                         console.log(e.message);
+                                        setErrorEmail(e.message);
                                     }
                                 }
                             }}

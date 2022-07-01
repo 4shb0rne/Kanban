@@ -53,10 +53,6 @@ const Card = ({
                                 {theTask.todos.length >= 1 && (
                                     <ChecklistProgress todos={theTask.todos} />
                                 )}
-                                {theTask.description !== null &&
-                                theTask.description?.length > 1 ? (
-                                    <Description />
-                                ) : null}
                             </div>
                         </div>
                     </div>

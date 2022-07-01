@@ -11,7 +11,7 @@ const ChecklistProgress = ({ todos }) => {
                 completed={(tasksCompleted.length / todos.length) * 100}
                 maxCompleted={100}
                 width="250px"
-                labelSize="50%"
+                labelSize="75%"
             ></ProgressBar>
         </div>
     );
