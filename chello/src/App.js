@@ -2,6 +2,7 @@ import "./styles/main.css";
 import { Route, Routes } from "react-router-dom";
 import { Login } from "./views/userauth/login";
 import { Register } from "./views/userauth/register";
+import { Profile } from "./views/userauth/profile";
 import { Layout } from "./views/main/layout";
 import Home from "./views/main/Home";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -47,6 +48,7 @@ function App() {
         ></Route>
         <Route path="/login" element={<Login></Login>} />
         <Route path="/register" element={<Register></Register>} />
+        <Route path="/profile" element={<Profile></Profile>} />
       </Routes>
     </Layout>
   );

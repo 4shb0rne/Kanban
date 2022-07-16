@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
-import { Bin } from "./Icons";
-
+import { Bin, Add } from "./Icons";
+import { InviteWorkspaceMember } from "./InviteWorkspaceMember";
+import { useState } from "react";
+import Modal from "./Modal";
 const WorkspaceList = ({
   workspaces,
   addNewWorkspace,
@@ -9,8 +11,12 @@ const WorkspaceList = ({
   fetchWorkspaces,
   userId,
 }) => {
+  const [modal, setModal] = useState(false);
   return (
     <div className="h-screen px-6 py-4 sm:py-20 sm:px-24">
+      <Modal modal={modal} setModal={setModal} ariaText="Workspace Invitation">
+        <InviteWorkspaceMember></InviteWorkspaceMember>
+      </Modal>
       <div className="flex flex-col my-2">
         <div className="flex justify-between">
           <h1 className="text-xl sm:text-3xl bg-gradient-to-r from-indigo-500 to-primary bg-clip-text">
@@ -61,8 +67,20 @@ const WorkspaceList = ({
                     </h2>
                   </Link>
                   <div
+                    className="ml-6 mt-2 cursor-pointer"
+                    onClick={() => setModal(true)}
+                  >
+                    <button
+                      className="bg-green-500 text-white leading-tight uppercase rounded shadow-md hover:bg-green-600 
+                      hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 
+                      ease-in-out"
+                    >
+                      <Add></Add>
+                    </button>
+                  </div>
+                  <div
                     onClick={() => deleteWorkspace(w.id, fetchWorkspaces)}
-                    className="text-red-500 ml-6 cursor-pointer hover:text-red-700"
+                    className="text-red-500 ml-3 cursor-pointer hover:text-red-700"
                   >
                     <Bin />
                   </div>

@@ -9,20 +9,23 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { useState, useEffect } from "react";
+import { WorkspaceFactory } from "../factory/WorkspaceFactory";
+import { Workspace } from "../model/Workspace";
 import { db } from "../util/firebase-config";
 
 export const addWorkspace = async (e, userId, fetchWorkspaces) => {
   e.preventDefault();
-  const docRef = await addDoc(collection(db, "workspaces"), {
-    name: e.target.elements.workspaceName.value,
-    user: doc(db, "users", userId),
-  });
+  const workspace = WorkspaceFactory(
+    userId,
+    e.target.elements.workspaceName.value
+  );
+  workspace.addWorkspace();
   e.target.elements.workspaceName.value = "";
   fetchWorkspaces();
 };
 
 export const deleteWorkspace = async (id, fetchWorkspaces) => {
-  await deleteDoc(doc(db, "workspaces", id));
+  Workspace.deleteWorkspace(id);
   fetchWorkspaces();
 };
 
@@ -37,7 +40,7 @@ const useWorkspaces = (userId) => {
           getDocs(
             query(
               collection(db, "workspaces"),
-              where("user", "==", docSnap.ref)
+              where("users", "array-contains", docSnap.ref)
             )
           ).then((workspaceSnap) => {
             const documents = [];
@@ -61,7 +64,6 @@ const useWorkspaces = (userId) => {
       setWorkspace(null);
     };
   }, [userId]);
-
   return [workspaces, fetch_workspaces];
 };
 

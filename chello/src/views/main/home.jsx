@@ -19,15 +19,17 @@ import {
   addWorkspace,
   deleteWorkspace,
 } from "../../controller/WorkspaceController";
+import { useHomeBoards } from "../../controller/BoardController";
+import HomeBoardList from "../components/HomeBoardList";
 const Home = ({ userId, name }) => {
   const [workspaces, fetchWorkspaces] = useWorkspaces(userId);
-
+  const [boards, fetchboards] = useHomeBoards(userId);
   const [user] = useAuthState(auth);
 
   if (!user) {
     return <Login></Login>;
   }
-  return workspaces !== null ? (
+  return workspaces !== null && boards !== null ? (
     <div>
       {user ? (
         <WorkspaceList
@@ -41,6 +43,7 @@ const Home = ({ userId, name }) => {
       ) : (
         <>PLS LOGIN</>
       )}
+      {user ? <HomeBoardList boards={boards}></HomeBoardList> : <>NO BOARD</>}
     </div>
   ) : (
     <div className="flex items-center justify-center h-screen">
