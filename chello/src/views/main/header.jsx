@@ -5,6 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../util/firebase-config";
 import { Logout } from "../../controller/UserController";
 import { useNavigate } from "react-router-dom";
+import { NotificationDropdown } from "./NotificationDropdown";
 export const Header = () => {
   const [user] = useAuthState(auth);
   let navigate = useNavigate();
@@ -94,6 +95,13 @@ export const Header = () => {
                   >
                     Logout
                   </button>
+                )}
+              </li>
+              <li>
+                {user && (
+                  <NotificationDropdown
+                    UserID={user.uid}
+                  ></NotificationDropdown>
                 )}
               </li>
             </ul>

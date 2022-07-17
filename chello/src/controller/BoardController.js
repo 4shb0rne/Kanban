@@ -68,7 +68,6 @@ export const useHomeBoards = (userId) => {
                 ...b.data(),
               });
             });
-            console.log(documents);
             setBoards(documents);
           });
         }

@@ -14,9 +14,6 @@ const WorkspaceList = ({
   const [modal, setModal] = useState(false);
   return (
     <div className="h-screen px-6 py-4 sm:py-20 sm:px-24">
-      <Modal modal={modal} setModal={setModal} ariaText="Workspace Invitation">
-        <InviteWorkspaceMember></InviteWorkspaceMember>
-      </Modal>
       <div className="flex flex-col my-2">
         <div className="flex justify-between">
           <h1 className="text-xl sm:text-3xl bg-gradient-to-r from-indigo-500 to-primary bg-clip-text">
@@ -60,6 +57,18 @@ const WorkspaceList = ({
                 className="bg-white text-gray-700 mb-3 mr-4 py-4 px-6 rounded-sm shadow-md w-full sm:w-auto"
                 key={w.id}
               >
+                <Modal
+                  modal={modal}
+                  setModal={setModal}
+                  ariaText="Workspace Invitation"
+                >
+                  <InviteWorkspaceMember
+                    UserID={userId}
+                    WorkspaceID={w.id}
+                    WorkspaceName={w.name}
+                    AdminName={name}
+                  ></InviteWorkspaceMember>
+                </Modal>
                 <div className="flex items-center justify-between">
                   <Link to={`/workspace/${w.id}`}>
                     <h2 className="text-lg sm:text-2xl text-gray-700 hover:text-gray-900">
