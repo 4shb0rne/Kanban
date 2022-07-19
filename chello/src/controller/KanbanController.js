@@ -14,7 +14,7 @@ import {
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import { debounce } from "../util/utils";
+
 export const useKanban = (boardId) => {
     const [tasks, setTasks] = useState(null);
     const [columns, setColumns] = useState(null);
@@ -22,13 +22,13 @@ export const useKanban = (boardId) => {
     const [boardName, setBoardName] = useState("");
 
     const fetch_cards = () => {
-        const docRef = doc(db, "boards", boardId);
+        const docRef = doc(db.getDB(), "boards", boardId);
         getDoc(docRef).then((docSnap) => {
             try {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     getDocs(
-                        query(collection(db, `boards/${boardId}/cards`))
+                        query(collection(db.getDB(), `boards/${boardId}/cards`))
                     ).then((listSnap) => {
                         const documents = [];
                         listSnap.forEach((b) => {
@@ -46,7 +46,7 @@ export const useKanban = (boardId) => {
         });
     };
     const fetch_board_name = () => {
-        const docRef = doc(db, "boards", boardId);
+        const docRef = doc(db.getDB(), "boards", boardId);
         getDoc(docRef).then((d) => {
             if (d.exists()) {
                 setBoardName(d.data().name);
@@ -67,12 +67,14 @@ export const useKanban = (boardId) => {
         };
     }, [boardId]);
     const fetch_lists = () => {
-        const docRef = doc(db, "boards", boardId);
+        const docRef = doc(db.getDB(), "boards", boardId);
         getDoc(docRef).then((docSnap) => {
             try {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    const q = query(collection(db, `boards/${boardId}/lists`));
+                    const q = query(
+                        collection(db.getDB(), `boards/${boardId}/lists`)
+                    );
                     const documents = [];
                     const snap = onSnapshot(q, (snapshots) => {
                         snapshots.forEach((b) => {
@@ -133,12 +135,12 @@ export const useKanban = (boardId) => {
 export const addCol = (e, boardId, allFetch) => {
     e.preventDefault();
     const newColumnName = e.target.elements.newCol.value;
-    const docRef = doc(db, `boards/${boardId}/lists`, newColumnName);
+    const docRef = doc(db.getDB(), `boards/${boardId}/lists`, newColumnName);
     setDoc(docRef, {
         title: newColumnName,
         taskIds: [],
     });
-    const docRef2 = doc(db, `boards/${boardId}/lists`, "columnOrder");
+    const docRef2 = doc(db.getDB(), `boards/${boardId}/lists`, "columnOrder");
     updateDoc(docRef2, {
         order: firebase.firestore.FieldValue.arrayUnion(newColumnName),
     });

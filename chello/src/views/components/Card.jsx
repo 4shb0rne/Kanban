@@ -3,7 +3,6 @@ import ChecklistProgress from "./ChecklistProgress";
 
 import Modal from "./Modal";
 import CardDetail from "./CardDetail";
-import { Description } from "./Icons";
 import { useState } from "react";
 
 const Card = ({
@@ -17,7 +16,7 @@ const Card = ({
 }) => {
     const [modal, setModal] = useState(false);
 
-    const theTask = allData.tasks[id];
+    const theTask = allData.tasks[id];  
 
     return (
         <div>
