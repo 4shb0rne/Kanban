@@ -15,12 +15,14 @@ export class Board {
     this.boardName = boardName;
   }
   async addBoard() {
+    const user = {
+      userid: doc(db.getDB(), "users", this.userID),
+      role: "admin",
+    };
     const columnOrder = { id: "columnOrder" };
     await addDoc(collection(db.getDB(), "boards"), {
       name: this.boardName,
-      users: firebase.firestore.FieldValue.arrayUnion(
-        doc(db.getDB(), "users", this.userID)
-      ),
+      users: firebase.firestore.FieldValue.arrayUnion(user),
       workspace: doc(db.getDB(), "workspaces", this.workspaceID.workspaceId),
     }).then((board) => {
       setDoc(doc(db.getDB(), `boards/${board.id}/lists`, "columnOrder"), {
@@ -33,9 +35,19 @@ export class Board {
     await deleteDoc(doc(db.getDB(), "boards", boardID));
   }
   static async leaveBoard(boardId, userId) {
-    const userRef = doc(db.getDB(), "users", userId);
+    const admin = {
+      userid: doc(db.getDB(), "users", userId),
+      role: "admin",
+    };
+    const user = {
+      userid: doc(db.getDB(), "users", userId),
+      role: "user",
+    };
     await updateDoc(doc(db.getDB(), "boards", boardId), {
-      users: firebase.firestore.FieldValue.arrayRemove(userRef),
+      users: firebase.firestore.FieldValue.arrayRemove(user),
+    });
+    await updateDoc(doc(db.getDB(), "boards", boardId), {
+      users: firebase.firestore.FieldValue.arrayRemove(admin),
     });
   }
 }

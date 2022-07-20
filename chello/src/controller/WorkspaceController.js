@@ -33,18 +33,21 @@ export const leaveWorkspace = async (workspaceId, userId) => {
   Workspace.leaveWorkspace(workspaceId, userId);
 };
 
-const useWorkspaces = (userId) => {
+export const useWorkspaces = (userId) => {
   const [workspaces, setWorkspace] = useState(null);
   const fetch_workspaces = () => {
     const docRef = doc(db.getDB(), "users", userId);
     getDoc(docRef).then((docSnap) => {
       try {
         if (docSnap.exists()) {
-          const data = docSnap.data();
+          const userRef = {
+            userid: docSnap.ref,
+            role: "admin",
+          };
           getDocs(
             query(
               collection(db.getDB(), "workspaces"),
-              where("users", "array-contains", docSnap.ref)
+              where("users", "array-contains", userRef)
             )
           ).then((workspaceSnap) => {
             const documents = [];
@@ -71,4 +74,43 @@ const useWorkspaces = (userId) => {
   return [workspaces, fetch_workspaces];
 };
 
-export default useWorkspaces;
+export const useWorkspacesUser = (userId) => {
+  const [workspaces, setWorkspace] = useState(null);
+  const fetch_workspaces = () => {
+    const docRef = doc(db.getDB(), "users", userId);
+    getDoc(docRef).then((docSnap) => {
+      try {
+        if (docSnap.exists()) {
+          const userRef = {
+            userid: docSnap.ref,
+            role: "user",
+          };
+          getDocs(
+            query(
+              collection(db.getDB(), "workspaces"),
+              where("users", "array-contains", userRef)
+            )
+          ).then((workspaceSnap) => {
+            const documents = [];
+            workspaceSnap.forEach((b) => {
+              documents.push({
+                id: b.id,
+                ...b.data(),
+              });
+            });
+            setWorkspace(documents);
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  };
+  useEffect(() => {
+    fetch_workspaces();
+    return () => {
+      setWorkspace(null);
+    };
+  }, [userId]);
+  return [workspaces, fetch_workspaces];
+};

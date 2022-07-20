@@ -11,17 +11,112 @@ import {
 } from "firebase/firestore";
 import { BoardFactory } from "../factory/BoardFactory";
 import { Board } from "../model/Board";
-const useBoards = (userId) => {
+
+export const useBoardsHomeAdmin = (userId) => {
   const [boards, setBoards] = useState(null);
   const fetch_boards = () => {
     const docRef = doc(db.getDB(), "users", userId);
     getDoc(docRef).then((docSnap) => {
       try {
         if (docSnap.exists()) {
+          const userRef = {
+            userid: docSnap.ref,
+            role: "admin",
+          };
           getDocs(
             query(
               collection(db.getDB(), "boards"),
-              where("users", "array-contains", docSnap.ref)
+              where("users", "array-contains", userRef)
+            )
+          ).then((boardSnap) => {
+            const documents = [];
+            boardSnap.forEach((b) => {
+              documents.push({
+                id: b.id,
+                ...b.data(),
+              });
+            });
+            setBoards(documents);
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  };
+  useEffect(() => {
+    fetch_boards();
+    return () => {
+      setBoards(null);
+    };
+  }, [userId]);
+
+  return [boards, fetch_boards];
+};
+
+export const useBoards = (userId, workspaceId) => {
+  const [boards, setBoards] = useState(null);
+  const fetch_boards = () => {
+    const docRef = doc(db.getDB(), "users", userId);
+    getDoc(docRef).then((docSnap) => {
+      try {
+        if (docSnap.exists()) {
+          const userRef = {
+            userid: docSnap.ref,
+            role: "admin",
+          };
+          const workspace = doc(
+            db.getDB(),
+            "workspaces",
+            workspaceId.workspaceId
+          );
+          getDocs(
+            query(
+              collection(db.getDB(), "boards"),
+              where("users", "array-contains", userRef),
+              where("workspace", "==", workspace)
+            )
+          ).then((boardSnap) => {
+            const documents = [];
+            boardSnap.forEach((b) => {
+              documents.push({
+                id: b.id,
+                ...b.data(),
+              });
+            });
+            setBoards(documents);
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  };
+  useEffect(() => {
+    fetch_boards();
+    return () => {
+      setBoards(null);
+    };
+  }, [userId]);
+
+  return [boards, fetch_boards];
+};
+
+export const useBoardsUser = (userId) => {
+  const [boards, setBoards] = useState(null);
+  const fetch_boards = () => {
+    const docRef = doc(db.getDB(), "users", userId);
+    getDoc(docRef).then((docSnap) => {
+      try {
+        if (docSnap.exists()) {
+          const userRef = {
+            userid: docSnap.ref,
+            role: "user",
+          };
+          getDocs(
+            query(
+              collection(db.getDB(), "boards"),
+              where("users", "array-contains", userRef)
             )
           ).then((boardSnap) => {
             const documents = [];
@@ -69,5 +164,3 @@ export const deleteBoard = async (id, fetchBoards) => {
 export const leaveBoard = async (boardId, userId) => {
   Board.leaveBoard(boardId, userId);
 };
-
-export default useBoards;

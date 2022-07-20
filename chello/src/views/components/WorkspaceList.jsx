@@ -50,7 +50,7 @@ const WorkspaceList = ({
           </div>
         </form>
         <div className="my-12">
-          <h1 className="text-xl text-blue-900">Your Workspaces</h1>
+          <h1 className="text-xl text-blue-900">Your Workspaces(Admin)</h1>
           <div className="flex flex-wrap mt-2">
             {workspaces.map((w) => (
               <div

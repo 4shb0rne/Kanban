@@ -1,18 +1,24 @@
 import { db, auth } from "../../util/firebase-config";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import useWorkspaces from "../../controller/WorkspaceController";
+import {
+  useWorkspaces,
+  useWorkspacesUser,
+} from "../../controller/WorkspaceController";
 import WorkspaceList from "../components/WorkspaceList";
 import { Login } from "../userauth/login";
 import {
   addWorkspace,
   deleteWorkspace,
 } from "../../controller/WorkspaceController";
-import useBoards from "../../controller/BoardController";
+import { useBoardsHomeAdmin } from "../../controller/BoardController";
 import HomeBoardList from "../components/HomeBoardList";
+import WorkspaceListUser from "../components/WorkspaceListUser";
+
 const Home = ({ userId, name }) => {
   const [workspaces, fetchWorkspaces] = useWorkspaces(userId);
-  const [boards, fetchboards] = useBoards(userId);
+  const [userworkspaces, fetchuserworkspaces] = useWorkspacesUser(userId);
+  const [boards, fetchboards] = useBoardsHomeAdmin(userId);
   const [user] = useAuthState(auth.getAuth());
 
   if (!user) {
@@ -21,14 +27,17 @@ const Home = ({ userId, name }) => {
   return workspaces !== null && boards !== null ? (
     <div>
       {user ? (
-        <WorkspaceList
-          workspaces={workspaces}
-          name={name}
-          addNewWorkspace={addWorkspace}
-          deleteWorkspace={deleteWorkspace}
-          fetchWorkspaces={fetchWorkspaces}
-          userId={userId}
-        ></WorkspaceList>
+        <div>
+          <WorkspaceList
+            workspaces={workspaces}
+            name={name}
+            addNewWorkspace={addWorkspace}
+            deleteWorkspace={deleteWorkspace}
+            fetchWorkspaces={fetchWorkspaces}
+            userId={userId}
+          ></WorkspaceList>
+          <WorkspaceListUser workspaces={userworkspaces}></WorkspaceListUser>
+        </div>
       ) : (
         <>PLS LOGIN</>
       )}
