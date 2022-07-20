@@ -1,4 +1,11 @@
-import { collection, doc, setDoc, addDoc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../util/firebase-config";
 import firebase from "firebase/compat/app";
 export class Board {
@@ -9,20 +16,26 @@ export class Board {
   }
   async addBoard() {
     const columnOrder = { id: "columnOrder" };
-    await addDoc(collection(db, "boards"), {
+    await addDoc(collection(db.getDB(), "boards"), {
       name: this.boardName,
       users: firebase.firestore.FieldValue.arrayUnion(
-        doc(db, "users", this.userID)
+        doc(db.getDB(), "users", this.userID)
       ),
-      workspace: doc(db, "workspaces", this.workspaceID.workspaceId),
+      workspace: doc(db.getDB(), "workspaces", this.workspaceID.workspaceId),
     }).then((board) => {
-      setDoc(doc(db, `boards/${board.id}/lists`, "columnOrder"), {
+      setDoc(doc(db.getDB(), `boards/${board.id}/lists`, "columnOrder"), {
         columnOrder: columnOrder,
         order: [],
       });
     });
   }
   static async deleteBoard(boardID) {
-    await deleteDoc(doc(db, "boards", boardID));
+    await deleteDoc(doc(db.getDB(), "boards", boardID));
+  }
+  static async leaveBoard(boardId, userId) {
+    const userRef = doc(db.getDB(), "users", userId);
+    await updateDoc(doc(db.getDB(), "boards", boardId), {
+      users: firebase.firestore.FieldValue.arrayRemove(userRef),
+    });
   }
 }

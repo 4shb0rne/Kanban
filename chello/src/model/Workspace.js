@@ -1,10 +1,7 @@
 import {
   collection,
   doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
+  updateDoc,
   addDoc,
   deleteDoc,
 } from "firebase/firestore";
@@ -16,7 +13,7 @@ export class Workspace {
     this.workspaceName = workspaceName;
   }
   async addWorkspace() {
-    await addDoc(collection(db, "workspaces"), {
+    await addDoc(collection(db.getDB(), "workspaces"), {
       name: this.workspaceName,
       users: firebase.firestore.FieldValue.arrayUnion(
         doc(db, "users", this.userID)
@@ -24,6 +21,12 @@ export class Workspace {
     });
   }
   static async deleteWorkspace(workspaceID) {
-    await deleteDoc(doc(db, "workspaces", workspaceID));
+    await deleteDoc(doc(db.getDB(), "workspaces", workspaceID));
+  }
+  static async leaveWorkspace(workspaceId, userId) {
+    const userRef = doc(db.getDB(), "users", userId);
+    await updateDoc(doc(db.getDB(), "workspaces", workspaceId.workspaceId), {
+      users: firebase.firestore.FieldValue.arrayRemove(userRef),
+    });
   }
 }

@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bin } from "./Icons";
-
+import { leaveWorkspace } from "../../controller/WorkspaceController";
 const BoardList = ({
   logOut,
   boards,
@@ -11,6 +11,7 @@ const BoardList = ({
   userId,
   workspaceId,
 }) => {
+  let navigate = useNavigate();
   const removeBoard = (id) => {
     deleteBoard(id);
   };
@@ -21,6 +22,15 @@ const BoardList = ({
           <h1 className="text-xl sm:text-3xl bg-gradient-to-r from-indigo-500 to-primary bg-clip-text">
             Welcome, {name ? name.split(" ")[0] : "Anonymous"}
           </h1>
+          <button
+            className="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
+            onClick={() => {
+              leaveWorkspace(workspaceId, userId);
+              navigate("/");
+            }}
+          >
+            Leave Workspace
+          </button>
         </div>
         <form
           onSubmit={(e) => addNewBoard(e, fetchBoards, userId, workspaceId)}
