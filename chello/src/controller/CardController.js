@@ -6,6 +6,7 @@ import {
     serverTimestamp,
     updateDoc,
     deleteDoc,
+    getDocs,
 } from "firebase/firestore";
 import firebase from "firebase/compat/app";
 
@@ -63,4 +64,36 @@ export const deleteCard = async (
     const docRef2 = doc(db.getDB(), `boards/${boardId}/cards`, taskDetails.id);
     await deleteDoc(docRef2);
     allFetch();
+};
+
+export const addComment = async (boardId, cardId, userId, userName, body) => {
+    console.log(cardId);
+    await addDoc(
+        collection(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`),
+        {
+            userId: userId,
+            userName: userName,
+            body: body,
+        }
+    );
+};
+export const deleteComment = async (boardId, cardId, commentId) => {
+    await deleteDoc(
+        collection(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`),
+        commentId
+    );
+};
+export const viewComment = async (boardId, cardId) => {
+    let documents = [];
+    const querycomment = await getDocs(
+        collection(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`)
+    );
+    querycomment.forEach((doc) => {
+        documents.push({
+            id: doc.id,
+            ...doc.data(),
+        });
+        console.log(doc.data());
+    });
+    return documents;
 };
