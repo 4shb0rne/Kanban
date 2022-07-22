@@ -4,7 +4,6 @@ import { db, auth } from "../../util/firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 const WorkspaceListUser = ({ workspaces }) => {
     const [user] = useAuthState(auth.getAuth());
-    console.log(doc(db.getDB(), "users", user.uid).id);
 
     return (
         <div className="h-screen px-6 sm:px-24">

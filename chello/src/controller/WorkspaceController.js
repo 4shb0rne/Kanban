@@ -139,3 +139,45 @@ export const useWorkspacesUser = (userId) => {
     }, [userId]);
     return [workspaces, fetch_workspaces];
 };
+
+export const getAdmins = (workspaceId) => {
+    const docRef = doc(db.getDB(), "workspaces", workspaceId);
+    const documents = [];
+    getDoc(docRef).then((docSnap) => {
+        if (docSnap.exists()) {
+            docSnap.data().users.forEach((u) => {
+                if (u.role == "admin") {
+                    getDoc(u.userid).then((userSnap) => {
+                        documents.push({
+                            id: userSnap.id,
+                            ...userSnap.data(),
+                        });
+                    });
+                }
+            });
+        }
+    });
+    return documents;
+};
+
+export const getUsers = async (workspaceId) => {
+    const docRef = doc(db.getDB(), "workspaces", workspaceId);
+    const documents = [];
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        for (let u of docSnap.data().users) {
+            if (u.role == "user") {
+                const userSnap = await getDoc(u.userid);
+                documents.push({
+                    id: userSnap.id,
+                    ...userSnap.data(),
+                });
+            }
+        }
+    }
+    return documents;
+};
+
+export const grantAdmin = (workspaceId, userId) => {};
+
+export const revokeAdmin = (workspaceId, userId) => {};
