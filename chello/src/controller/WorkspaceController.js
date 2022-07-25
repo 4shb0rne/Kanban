@@ -142,7 +142,7 @@ export const useWorkspacesUser = (userId) => {
 };
 
 export const getAdmins = async (workspaceId) => {
-  const docRef = doc(db.getDB(), "workspaces", workspaceId);
+  const docRef = doc(db.getDB(), "workspaces", workspaceId.WorkspaceID);
   const documents = [];
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
@@ -156,12 +156,11 @@ export const getAdmins = async (workspaceId) => {
       }
     }
   }
-  console.log(documents);
   return documents;
 };
 
 export const getUsers = async (workspaceId) => {
-  const docRef = doc(db.getDB(), "workspaces", workspaceId);
+  const docRef = doc(db.getDB(), "workspaces", workspaceId.WorkspaceID);
   const documents = [];
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
@@ -175,7 +174,6 @@ export const getUsers = async (workspaceId) => {
       }
     }
   }
-  console.log(documents);
   return documents;
 };
 
@@ -184,7 +182,8 @@ export const grantAdmin = async (workspaceId, userId) => {
     userid: doc(db.getDB(), "users", userId),
     role: "user",
   };
-  const docRef = doc(db.getDB(), "workspaces", workspaceId);
+
+  const docRef = doc(db.getDB(), "workspaces", workspaceId.WorkspaceID);
   await updateDoc(docRef, {
     users: firebase.firestore.FieldValue.arrayRemove(user),
   });
