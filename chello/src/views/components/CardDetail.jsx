@@ -11,6 +11,7 @@ import {
 import { auth } from "../../util/firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Bin } from "./Icons";
+import parse from "html-react-parser";
 const CardDetail = ({
   taskDetails,
   boardId,
@@ -76,7 +77,7 @@ const CardDetail = ({
       </Modal>
 
       <form
-        onSubmit={(e) =>
+        onSubmit={(e) => {
           updateCard(
             e,
             closeModal,
@@ -85,8 +86,8 @@ const CardDetail = ({
             updatedTitle,
             updatedDesc,
             allFetch
-          )
-        }
+          );
+        }}
         autoComplete="off"
       >
         <div>
@@ -130,13 +131,21 @@ const CardDetail = ({
                   >
                     Description:
                   </label>
-                  <textarea
+                  <div
+                    name="desc"
+                    className="border border-gray-300  px-4 py-3 outline-none h-56 w-full"
+                    contentEditable="true"
+                    onInput={(e) => setNewDesc(e.currentTarget.innerHTML)}
+                    suppressContentEditableWarning={true}
+                  >
+                    {parse(taskDetails.description)}
+                  </div>
+                  {/* <textarea
                     name="desc"
                     className="border border-gray-300  px-4 py-3 outline-none h-56 w-full"
                     defaultValue={taskDetails.description}
-                    contenteditable
-                    onChange={(e) => setNewDesc(e.target.value)}
-                  />
+                    onChange={(e) => }
+                  /> */}
                   <div>
                     <div
                       onClick={() => setEditing(false)}
@@ -162,7 +171,7 @@ const CardDetail = ({
                 {taskDetails.description === "" ||
                 taskDetails.description === null
                   ? "Click here to add description"
-                  : updatedDesc}
+                  : parse(updatedDesc)}
               </div>
             </div>
           </div>
