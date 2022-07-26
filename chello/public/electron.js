@@ -4,22 +4,23 @@ const { app, BrowserWindow } = require("electron");
 const isDev = require("electron-is-dev");
 
 function createWindow() {
-  // Create the browser window.
-  const win = new BrowserWindow({
-    webPreferences: {
-      nodeIntegration: true,
-    },
-    icon: "public/icon.png",
-  });
-  win.maximize();
-  // and load the index.html of the app.
-  // win.loadFile("index.html");
-  win.loadURL(
-    isDev
-      ? "http://localhost:3000"
-      : `file://${path.join(__dirname, "../build/index.html")}`
-  );
-  // Open the DevTools.
+    // Create the browser window.
+    const win = new BrowserWindow({
+        autoHideMenuBar: true,
+        webPreferences: {
+            nodeIntegration: true,
+        },
+        icon: "public/icon.png",
+    });
+    win.maximize();
+    // and load the index.html of the app.
+    // win.loadFile("index.html");
+    win.loadURL(
+        isDev
+            ? "http://localhost:3000"
+            : `file://${path.join(__dirname, "../build/index.html")}`
+    );
+    // Open the DevTools.
 }
 
 // This method will be called when Electron has finished
@@ -31,28 +32,28 @@ app.whenReady().then(createWindow);
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
 });
 
 app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
 });
 
 const loadTemplate = isDev
-  ? "http://localhost:3000"
-  : `file://${path.join(__dirname, "../build/index.html")}`;
+    ? "http://localhost:3000"
+    : `file://${path.join(__dirname, "../build/index.html")}`;
 
 app.setUserTasks([
-  {
-    program: process.execPath,
-    arguments: loadTemplate,
-    iconPath: path.join(__dirname, "icon.ico"),
-    iconIndex: 0,
-    title: "New Window",
-    description: "Create a new window",
-  },
+    {
+        program: process.execPath,
+        arguments: loadTemplate,
+        iconPath: path.join(__dirname, "icon.ico"),
+        iconIndex: 0,
+        title: "New Window",
+        description: "Create a new window",
+    },
 ]);
