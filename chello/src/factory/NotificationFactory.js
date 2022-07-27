@@ -1,15 +1,35 @@
-import { Notification } from "../model/Notification";
+import {
+  WorkspaceNotification,
+  BoardNotification,
+} from "../model/Notification";
 
-export const NotificationFactory = (
+export const WorkspaceNotificationFactory = (
   UserID,
   WorkspaceID,
   WorkspaceName,
   AdminName
 ) => {
-  const notification = new Notification(
+  const notification = new WorkspaceNotification(
     UserID,
     WorkspaceID,
     WorkspaceName,
+    AdminName
+  );
+  return notification;
+};
+
+export const BoardNotificationFactory = (
+  UserID,
+  WorkspaceID,
+  BoardID,
+  BoardName,
+  AdminName
+) => {
+  const notification = new BoardNotification(
+    UserID,
+    WorkspaceID,
+    BoardID,
+    BoardName,
     AdminName
   );
   return notification;

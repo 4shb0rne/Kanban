@@ -1,17 +1,17 @@
 import { GetNotification } from "../../controller/NotificationController";
 import { useEffect, useState } from "react";
 import {
-  AcceptInvitation,
+  AcceptInvitationWorkspace,
   DeclineInvitation,
 } from "../../controller/InvitationController";
 export const NotificationDropdown = ({ UserID }) => {
-  const [notification, setNotification] = useState([]);
+  const [notificationworkspaces, setNotificationworkspaces] = useState([]);
   useEffect(() => {
     fetch_notif();
   }, []);
   const fetch_notif = async () => {
     let notifications = await GetNotification(UserID);
-    setNotification(notifications);
+    setNotificationworkspaces(notifications);
   };
   return (
     <div className="flex justify-center">
@@ -74,7 +74,7 @@ export const NotificationDropdown = ({ UserID }) => {
         "
             aria-labelledby="dropdownMenuButton1"
           >
-            {notification.length == 0 && (
+            {notificationworkspaces.length == 0 && (
               <li>
                 <a
                   className="
@@ -96,7 +96,7 @@ export const NotificationDropdown = ({ UserID }) => {
                 </a>
               </li>
             )}
-            {notification.map((n) => (
+            {notificationworkspaces.map((n) => (
               <li>
                 <a
                   className="
@@ -112,7 +112,6 @@ export const NotificationDropdown = ({ UserID }) => {
               text-gray-700
               hover:bg-gray-100
             "
-                  href="#"
                 >
                   User <span className="text-blue-600">{n.Sender}</span> sent
                   you a invitation to{" "}
@@ -121,7 +120,11 @@ export const NotificationDropdown = ({ UserID }) => {
                 <button
                   className="m-3 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
                   onClick={async () => {
-                    await AcceptInvitation(n.id, n.WorkspaceID, UserID);
+                    await AcceptInvitationWorkspace(
+                      n.id,
+                      n.WorkspaceID,
+                      UserID
+                    );
                     fetch_notif();
                   }}
                 >

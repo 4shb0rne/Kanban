@@ -8,6 +8,7 @@ import {
   query,
   deleteDoc,
   where,
+  updateDoc,
 } from "firebase/firestore";
 import { BoardFactory } from "../factory/BoardFactory";
 import { Board } from "../model/Board";
@@ -163,4 +164,11 @@ export const deleteBoard = async (id, fetchBoards) => {
 
 export const leaveBoard = async (boardId, userId) => {
   Board.leaveBoard(boardId, userId);
+};
+
+export const changeVisibility = async (workspaceId, boardId, visiblityType) => {
+  const docRef = doc(db.getDB(), `workspaces/${workspaceId}/`, boardId);
+  await updateDoc(docRef, {
+    visiblitytype: visiblityType,
+  });
 };
