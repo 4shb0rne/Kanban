@@ -50,7 +50,9 @@ export const ManageWorkspace = (WorkspaceID) => {
                     <button
                         className="bg-blue-500 text-white px-2 py-1 rounded-sm mt-3"
                         onClick={() => {}}
-                    />
+                    >
+                        Submit
+                    </button>
                 </div>
             </form>
             <form autoComplete="off" className="mt-10">
@@ -85,7 +87,47 @@ export const ManageWorkspace = (WorkspaceID) => {
                     <button
                         className="bg-blue-500 text-white px-2 py-1 rounded-sm mt-3"
                         onClick={() => {}}
-                    />
+                    >
+                        Submit
+                    </button>
+                </div>
+            </form>
+            <form autoComplete="off" className="mt-10">
+                <div>
+                    <h1>Workspace Visibility</h1>
+                    <div className="flex mt-2">
+                        <div className="xl:w-96">
+                            <select
+                                className="form-select form-select-lg
+                                            appearance-none
+                                            block
+                                            w-full
+                                            px-4
+                                            py-2
+                                            text-xl
+                                            font-normal
+                                            text-gray-700
+                                            bg-white bg-clip-padding bg-no-repeat
+                                            border border-solid border-gray-300
+                                            rounded
+                                            transition
+                                            ease-in-out
+                                            m-0
+                                            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                            >
+                                <option value={"public"}>Public</option>
+                                <option value={"memberonly"}>
+                                    Member Only
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <button
+                        className="bg-blue-500 text-white px-2 py-1 rounded-sm mt-3"
+                        onClick={() => {}}
+                    >
+                        Submit
+                    </button>
                 </div>
             </form>
         </div>
