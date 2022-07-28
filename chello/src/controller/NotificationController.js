@@ -39,7 +39,6 @@ export const createNotificationWorkspace = async (
   window.location.reload();
 };
 
-//ini belum dibenerin
 export const createNotificationBoard = async (
   e,
   UserID,
@@ -58,17 +57,19 @@ export const createNotificationBoard = async (
     userid = doc.data().uid;
   });
   const notification = BoardNotificationFactory(
-    //ini blm dibenerin
     userid,
     UserID.WorkspaceID,
-    UserID.WorkspaceName,
+    UserID.BoardID,
+    UserID.BoardName,
     UserID.AdminName
   );
+  console.log(notification);
   await addDoc(
     collection(db.getDB(), `users/${notification.UserID}/notifications/`),
     {
+      WorkspaceID: notification.WorkspaceID.workspaceId,
       BoardID: notification.BoardID,
-      BoardName: notification.Boardname,
+      BoardName: notification.BoardName,
       Sender: notification.AdminName,
       Type: "Board",
     }

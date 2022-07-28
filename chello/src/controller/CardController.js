@@ -96,9 +96,9 @@ export const getComments = async (boardId, cardId) => {
   return documents;
 };
 
-export const setCardDueDate = async () => {};
-export const setCardReminderDate = async () => {};
-
 export const AddCardLabel = async () => {};
 export const UpdateCardLabel = async () => {};
 export const DeleteCardLabel = async () => {};
+
+export const setCardDueDate = async () => {};
+export const setCardReminderDate = async () => {};

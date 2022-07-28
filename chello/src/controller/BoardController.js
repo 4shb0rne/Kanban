@@ -103,10 +103,12 @@ export const useBoards = (userId, workspaceId) => {
   return [boards, fetch_boards];
 };
 
-export const useBoardsUser = (userId) => {
+export const useBoardsUser = (userId, workspaceId) => {
   const [boards, setBoards] = useState(null);
   const fetch_boards = () => {
+    const documents = [];
     const docRef = doc(db.getDB(), "users", userId);
+    const workspace = doc(db.getDB(), "workspaces", workspaceId.workspaceId);
     getDoc(docRef).then((docSnap) => {
       try {
         if (docSnap.exists()) {
@@ -117,10 +119,33 @@ export const useBoardsUser = (userId) => {
           getDocs(
             query(
               collection(db.getDB(), "boards"),
-              where("users", "array-contains", userRef)
+              where("users", "array-contains", userRef),
+              where("visibilitytype", "==", "memberonly"),
+              where("workspace", "==", workspace)
             )
           ).then((boardSnap) => {
-            const documents = [];
+            boardSnap.forEach((b) => {
+              documents.push({
+                id: b.id,
+                ...b.data(),
+              });
+            });
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    getDoc(docRef).then((docSnap) => {
+      try {
+        if (docSnap.exists()) {
+          getDocs(
+            query(
+              collection(db.getDB(), "boards"),
+              where("visibilitytype", "==", "public"),
+              where("workspace", "==", workspace)
+            )
+          ).then((boardSnap) => {
             boardSnap.forEach((b) => {
               documents.push({
                 id: b.id,

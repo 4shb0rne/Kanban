@@ -3,15 +3,16 @@ import { useEffect, useState } from "react";
 import {
   AcceptInvitationWorkspace,
   DeclineInvitation,
+  AcceptInvitationBoard,
 } from "../../controller/InvitationController";
 export const NotificationDropdown = ({ UserID }) => {
-  const [notificationworkspaces, setNotificationworkspaces] = useState([]);
+  const [notification, setNotification] = useState([]);
   useEffect(() => {
     fetch_notif();
   }, []);
   const fetch_notif = async () => {
     let notifications = await GetNotification(UserID);
-    setNotificationworkspaces(notifications);
+    setNotification(notifications);
   };
   return (
     <div className="flex justify-center">
@@ -74,7 +75,7 @@ export const NotificationDropdown = ({ UserID }) => {
         "
             aria-labelledby="dropdownMenuButton1"
           >
-            {notificationworkspaces.length == 0 && (
+            {notification.length == 0 && (
               <li>
                 <a
                   className="
@@ -96,10 +97,12 @@ export const NotificationDropdown = ({ UserID }) => {
                 </a>
               </li>
             )}
-            {notificationworkspaces.map((n) => (
-              <li>
-                <a
-                  className="
+            {notification.map((n) => {
+              if (n.Type == "Workspace") {
+                return (
+                  <li>
+                    <a
+                      className="
               dropdown-item
               text-sm
               py-2
@@ -112,35 +115,84 @@ export const NotificationDropdown = ({ UserID }) => {
               text-gray-700
               hover:bg-gray-100
             "
-                >
-                  User <span className="text-blue-600">{n.Sender}</span> sent
-                  you a invitation to{" "}
-                  <span className="text-blue-600">{n.WorkspaceName}</span>
-                </a>
-                <button
-                  className="m-3 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-                  onClick={async () => {
-                    await AcceptInvitationWorkspace(
-                      n.id,
-                      n.WorkspaceID,
-                      UserID
-                    );
-                    fetch_notif();
-                  }}
-                >
-                  Accept
-                </button>
-                <button
-                  className="m-3 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-                  onClick={async () => {
-                    await DeclineInvitation(n.id, UserID);
-                    fetch_notif();
-                  }}
-                >
-                  Decline
-                </button>
-              </li>
-            ))}
+                    >
+                      User <span className="text-blue-600">{n.Sender}</span>{" "}
+                      sent you a invitation to{" "}
+                      <span className="text-blue-600">{n.WorkspaceName}</span>
+                    </a>
+                    <button
+                      className="m-3 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                      onClick={async () => {
+                        await AcceptInvitationBoard(
+                          n.id,
+                          n.WorkspaceID,
+                          n.BoardID,
+                          UserID
+                        );
+                        fetch_notif();
+                      }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className="m-3 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                      onClick={async () => {
+                        await DeclineInvitation(n.id, UserID);
+                        fetch_notif();
+                      }}
+                    >
+                      Decline
+                    </button>
+                  </li>
+                );
+              } else {
+                return (
+                  <li>
+                    <a
+                      className="
+              dropdown-item
+              text-sm
+              py-2
+              px-4
+              font-normal
+              block
+              w-full
+              whitespace-nowrap
+              bg-transparent
+              text-gray-700
+              hover:bg-gray-100
+            "
+                    >
+                      User <span className="text-blue-600">{n.Sender}</span>{" "}
+                      sent you a invitation to{" "}
+                      <span className="text-blue-600">{n.BoardName}</span>
+                    </a>
+                    <button
+                      className="m-3 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                      onClick={async () => {
+                        await AcceptInvitationWorkspace(
+                          n.id,
+                          n.WorkspaceID,
+                          UserID
+                        );
+                        fetch_notif();
+                      }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className="m-3 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                      onClick={async () => {
+                        await DeclineInvitation(n.id, UserID);
+                        fetch_notif();
+                      }}
+                    >
+                      Decline
+                    </button>
+                  </li>
+                );
+              }
+            })}
           </ul>
         </div>
       </div>

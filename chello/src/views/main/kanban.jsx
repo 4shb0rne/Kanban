@@ -10,9 +10,13 @@ import { useKanban, addCol } from "../../controller/KanbanController";
 import { debounce } from "../../util/utils";
 import { doc, setDoc } from "firebase/firestore";
 import { leaveBoard } from "../../controller/BoardController";
+import Modal from "../components/Modal";
+import CardLabel from "../components/CardLabel";
+import { useState } from "react";
 
 const Kanban = ({ userId }) => {
   const { boardId } = useParams();
+  const [modal, setModal] = useState(false);
   const { initialData, setInitialData, boardName, allFetch } =
     useKanban(boardId);
   let navigate = useNavigate();
@@ -111,6 +115,9 @@ const Kanban = ({ userId }) => {
         <>
           <main className="pb-2 h-screen w-screen">
             <div className="flex flex-col h-full">
+              <Modal modal={modal} setModal={setModal} ariaText="Card Label">
+                <CardLabel></CardLabel>
+              </Modal>
               <header className="bg-white text-sm sm:text-base py-5 mx-3 md:mx-6">
                 <div className="flex flex-wrap justify-between items-center">
                   <span className="text-xl">
@@ -124,15 +131,23 @@ const Kanban = ({ userId }) => {
                       onChange={(e) => changeBoardName(e.target.value)}
                     />
                   </span>
-                  <button
-                    className="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => {
-                      leaveBoard(boardId, userId);
-                      navigate("/");
-                    }}
-                  >
-                    Leave Board
-                  </button>
+                  <div>
+                    <button
+                      className="inline-block px-6 py-2.5 m-4 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                      onClick={() => setModal(true)}
+                    >
+                      Card Label
+                    </button>
+                    <button
+                      className="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
+                      onClick={() => {
+                        leaveBoard(boardId, userId);
+                        navigate("/");
+                      }}
+                    >
+                      Leave Board
+                    </button>
+                  </div>
                 </div>
               </header>
               <DragDropContext onDragEnd={onDragEnd}>

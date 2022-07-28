@@ -9,7 +9,7 @@ import BoardListUser from "../components/BoardListUser";
 export const Board = ({ userId, name }) => {
   let workspaceId = useParams();
   const [boards, fetchboards] = useBoards(userId, workspaceId);
-  const [userboards, fetchuserboards] = useBoardsUser(userId);
+  const [userboards, fetchuserboards] = useBoardsUser(userId, workspaceId);
   return boards !== null && userboards !== null ? (
     <div>
       <BoardList

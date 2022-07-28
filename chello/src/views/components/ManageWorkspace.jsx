@@ -21,6 +21,7 @@ export const ManageWorkspace = (WorkspaceID) => {
   const fetch_admins = async () => {
     let admin = await getAdmins(WorkspaceID);
     setAdmins(admin);
+    console.log("admins");
   };
 
   return (
