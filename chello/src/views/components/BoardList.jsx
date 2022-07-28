@@ -1,6 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Bin } from "./Icons";
+import { Bin, Add } from "./Icons";
 import { leaveWorkspace } from "../../controller/WorkspaceController";
+import { useState } from "react";
+import Modal from "./Modal";
+import { InviteBoardMember } from "./InviteBoardMember";
 const BoardList = ({
     logOut,
     boards,
@@ -11,6 +14,7 @@ const BoardList = ({
     userId,
     workspaceId,
 }) => {
+    const [modal, setModal] = useState(false);
     let navigate = useNavigate();
     const removeBoard = (id) => {
         deleteBoard(id);
@@ -64,13 +68,28 @@ const BoardList = ({
                     </div>
                 </form>
                 <div className="my-12">
-                    <h1 className="text-xl text-blue-900">Your Boards</h1>
+                    <h1 className="text-xl text-blue-900">
+                        Your Boards(Admin)
+                    </h1>
                     <div className="flex flex-wrap mt-2">
                         {boards.map((b) => (
                             <div
                                 className="bg-white text-gray-700 mb-3 mr-4 py-4 px-6 rounded-sm shadow-md w-full sm:w-auto"
                                 key={b.id}
                             >
+                                <Modal
+                                    modal={modal}
+                                    setModal={setModal}
+                                    ariaText="Board Invitation"
+                                >
+                                    <InviteBoardMember
+                                        UserID={userId}
+                                        WorkspaceID={workspaceId}
+                                        BoardID={b.id}
+                                        BoardName={b.title}
+                                        AdminName={name}
+                                    ></InviteBoardMember>
+                                </Modal>
                                 {b.title}
                                 <div className="flex items-center justify-between">
                                     <Link to={`/board/${b.id}`}>
@@ -78,6 +97,19 @@ const BoardList = ({
                                             {b.name}
                                         </h2>
                                     </Link>
+
+                                    <div
+                                        className="ml-6 mt-2 cursor-pointer"
+                                        onClick={() => setModal(true)}
+                                    >
+                                        <button
+                                            className="bg-green-500 text-white leading-tight uppercase rounded shadow-md hover:bg-green-600 
+                      hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 
+                      ease-in-out"
+                                        >
+                                            <Add></Add>
+                                        </button>
+                                    </div>
                                     <div
                                         onClick={() => removeBoard(b.id)}
                                         className="text-red-500 ml-6 cursor-pointer hover:text-red-700"
