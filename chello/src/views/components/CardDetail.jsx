@@ -7,11 +7,15 @@ import {
     addComment,
     getComments,
     deleteComment,
+    setCardDueDate,
+    setCardReminderDate,
 } from "../../controller/CardController";
 import { auth } from "../../util/firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Bin } from "./Icons";
 import parse from "html-react-parser";
+import { convertToLocalDateTime } from "../../util/utils";
+
 const CardDetail = ({
     taskDetails,
     boardId,
@@ -20,6 +24,7 @@ const CardDetail = ({
     closeModal,
     allFetch,
 }) => {
+    console.log(taskDetails);
     const [user] = useAuthState(auth.getAuth());
     const [updatedTitle, setTitle] = useState(taskDetails.title);
     const [updatedDesc, setNewDesc] = useState(taskDetails.description);
@@ -27,6 +32,7 @@ const CardDetail = ({
     const [modal, setModal] = useState(false);
     const [comments, setComments] = useState([]);
     const [editing, setEditing] = useState(false);
+
     useEffect(() => {
         fetch_comments();
     }, []);
@@ -228,8 +234,26 @@ const CardDetail = ({
                             Due Date :
                         </label>
                         <h4 className="tracking-wide">
-                            <input type="date"></input>
-                            <button className="ml-10 bg-green-700 text-white px-2 py-1 rounded-sm transform hover:-translate-y-1 transition-transform duration-300">
+                            <input
+                                type="datetime-local"
+                                id="duedate"
+                                defaultValue={convertToLocalDateTime(
+                                    new Date(taskDetails.DueDate)
+                                )}
+                            ></input>
+                            <button
+                                className="ml-10 bg-green-700 text-white px-2 py-1 rounded-sm transform hover:-translate-y-1 transition-transform duration-300"
+                                onClick={() => {
+                                    const duedate = new Date(
+                                        document.getElementById("duedate").value
+                                    );
+                                    setCardDueDate(
+                                        boardId,
+                                        taskDetails.id,
+                                        duedate
+                                    );
+                                }}
+                            >
                                 Save Due Date
                             </button>
                         </h4>
@@ -244,8 +268,26 @@ const CardDetail = ({
                             Reminder Date :
                         </label>
                         <h4 className="tracking-wide">
-                            <input type="date"></input>
-                            <button className="ml-10 bg-green-700 text-white px-2 py-1 rounded-sm transform hover:-translate-y-1 transition-transform duration-300">
+                            <input
+                                type="datetime-local"
+                                id="reminderdate"
+                                defaultValue={taskDetails.ReminderDate}
+                            ></input>
+                            <button
+                                className="ml-10 bg-green-700 text-white px-2 py-1 rounded-sm transform hover:-translate-y-1 transition-transform duration-300"
+                                onClick={() => {
+                                    const reminderdate = new Date(
+                                        document.getElementById(
+                                            "reminderdate"
+                                        ).value
+                                    );
+                                    setCardReminderDate(
+                                        boardId,
+                                        taskDetails.id,
+                                        reminderdate
+                                    );
+                                }}
+                            >
                                 Save Reminder Date
                             </button>
                         </h4>

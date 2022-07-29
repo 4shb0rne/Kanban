@@ -77,7 +77,7 @@ const BoardList = ({
                 >
                   <InviteBoardMember
                     UserID={userId}
-                    WorkspaceID={workspaceId}
+                    WorkspaceID={workspaceId} 
                     BoardID={b.id}
                     BoardName={b.name}
                     AdminName={name}

@@ -1,104 +1,139 @@
 import { db } from "../util/firebase-config";
 import {
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  updateDoc,
-  deleteDoc,
-  getDocs,
+    addDoc,
+    collection,
+    doc,
+    serverTimestamp,
+    updateDoc,
+    deleteDoc,
+    getDocs,
+    Timestamp,
 } from "firebase/firestore";
 import firebase from "firebase/compat/app";
 
 export const addCard = async (e, col, description, boardId, close) => {
-  e.preventDefault();
-  const title = e.target.elements.newTaskTitle.value;
+    e.preventDefault();
+    const title = e.target.elements.newTaskTitle.value;
 
-  await addDoc(collection(db.getDB(), `boards/${boardId}/cards`), {
-    title,
-    description,
-    todos: [],
-    dateAdded: serverTimestamp(),
-  }).then((card) => {
-    updateDoc(doc(db.getDB(), `boards/${boardId}/lists`, col), {
-      taskIds: firebase.firestore.FieldValue.arrayUnion(card.id),
+    await addDoc(collection(db.getDB(), `boards/${boardId}/cards`), {
+        title,
+        description,
+        todos: [],
+        dateAdded: serverTimestamp(),
+    }).then((card) => {
+        updateDoc(doc(db.getDB(), `boards/${boardId}/lists`, col), {
+            taskIds: firebase.firestore.FieldValue.arrayUnion(card.id),
+        });
     });
-  });
-  close();
-  window.location.reload();
+    close();
+    window.location.reload();
 };
 export const updateCard = async (
-  e,
-  closeModal,
-  boardId,
-  taskDetails,
-  updatedTitle,
-  updatedDesc,
-  allFetch
+    e,
+    closeModal,
+    boardId,
+    taskDetails,
+    updatedTitle,
+    updatedDesc,
+    allFetch
 ) => {
-  e.preventDefault();
-  closeModal();
-  const docRef = doc(db.getDB(), `boards/${boardId}/cards`, taskDetails.id);
-  await updateDoc(docRef, {
-    title: updatedTitle,
-    description: updatedDesc,
-  });
-  allFetch();
+    e.preventDefault();
+    closeModal();
+    const docRef = doc(db.getDB(), `boards/${boardId}/cards`, taskDetails.id);
+    await updateDoc(docRef, {
+        title: updatedTitle,
+        description: updatedDesc,
+    });
+    allFetch();
 };
 
 export const deleteCard = async (
-  e,
-  setModal,
-  closeModal,
-  boardId,
-  columnDetails,
-  taskDetails,
-  allFetch
+    e,
+    setModal,
+    closeModal,
+    boardId,
+    columnDetails,
+    taskDetails,
+    allFetch
 ) => {
-  setModal(false);
-  closeModal();
-  const docRef = doc(db.getDB(), `boards/${boardId}/lists`, columnDetails.id);
-  await updateDoc(docRef, {
-    taskIds: firebase.firestore.FieldValue.arrayRemove(taskDetails.id),
-  });
-  const docRef2 = doc(db.getDB(), `boards/${boardId}/cards`, taskDetails.id);
-  await deleteDoc(docRef2);
-  allFetch();
+    setModal(false);
+    closeModal();
+    const docRef = doc(db.getDB(), `boards/${boardId}/lists`, columnDetails.id);
+    await updateDoc(docRef, {
+        taskIds: firebase.firestore.FieldValue.arrayRemove(taskDetails.id),
+    });
+    const docRef2 = doc(db.getDB(), `boards/${boardId}/cards`, taskDetails.id);
+    await deleteDoc(docRef2);
+    allFetch();
 };
 
 export const addComment = async (boardId, cardId, userId, userName, body) => {
-  console.log(cardId);
-  await addDoc(
-    collection(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`),
-    {
-      userId: userId,
-      userName: userName,
-      body: body,
-    }
-  );
+    console.log(cardId);
+    await addDoc(
+        collection(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`),
+        {
+            userId: userId,
+            userName: userName,
+            body: body,
+        }
+    );
 };
 export const deleteComment = async (boardId, cardId, commentId) => {
-  await deleteDoc(
-    doc(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`, commentId)
-  );
+    await deleteDoc(
+        doc(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`, commentId)
+    );
 };
 export const getComments = async (boardId, cardId) => {
-  let documents = [];
-  const querycomment = await getDocs(
-    collection(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`)
-  );
-  querycomment.forEach((doc) => {
-    documents.push({
-      id: doc.id,
-      ...doc.data(),
+    let documents = [];
+    const querycomment = await getDocs(
+        collection(db.getDB(), `boards/${boardId}/cards/${cardId}/comments`)
+    );
+    querycomment.forEach((doc) => {
+        documents.push({
+            id: doc.id,
+            ...doc.data(),
+        });
     });
-  });
-  return documents;
+    return documents;
 };
 
-export const AddCardLabel = async () => {};
-export const UpdateCardLabel = async () => {};
-export const DeleteCardLabel = async () => {};
+export const AddCardLabel = async (boardId, labelColor, labelName) => {
+    await addDoc(
+        collection(db.getDB(), `boards/${boardId.boardId}/cardlabels`),
+        {
+            labelColor: labelColor,
+            labelName: labelName,
+        }
+    );
+};
+export const UpdateCardLabel = async (boardId, labelId) => {
+    await deleteDoc(doc(db.getDB(), `boards/${boardId}`), labelId);
+};
 
-export const setCardDueDate = async () => {};
-export const setCardReminderDate = async () => {};
+export const getCardLabel = async (boardId) => {
+    let documents = [];
+    const query = await getDocs(
+        collection(db.getDB(), `boards/${boardId}/cardlabels`)
+    );
+    query.forEach((doc) => {
+        documents.push({
+            id: doc.id,
+            ...doc.data(),
+        });
+    });
+    return documents;
+};
+export const DeleteCardLabel = async (boardId, labelId) => {
+    await deleteDoc(doc(db.getDB(), `boards/${boardId}/cardlabels`, labelId));
+};
+
+export const setCardDueDate = async (boardId, cardId, date) => {
+    await updateDoc(doc(db.getDB(), `boards/${boardId}/cards/${cardId}`), {
+        DueDate: Timestamp.fromDate(date),
+    });
+};
+export const setCardReminderDate = async (boardId, cardId, date) => {
+    await updateDoc(doc(db.getDB(), `boards/${boardId}/cards/${cardId}`), {
+        ReminderDate: Timestamp.fromDate(date),
+    });
+};
