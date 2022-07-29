@@ -12,6 +12,8 @@ export const ManageWorkspace = (WorkspaceID) => {
   const [admins, setAdmins] = useState([]);
   useEffect(() => {
     fetch_users();
+  }, []);
+  useEffect(() => {
     fetch_admins();
   }, []);
   const fetch_users = async () => {
@@ -21,7 +23,6 @@ export const ManageWorkspace = (WorkspaceID) => {
   const fetch_admins = async () => {
     let admin = await getAdmins(WorkspaceID);
     setAdmins(admin);
-    console.log("admins");
   };
 
   return (
@@ -60,8 +61,8 @@ export const ManageWorkspace = (WorkspaceID) => {
           <button
             className="bg-blue-500 text-white px-2 py-1 rounded-sm mt-3"
             onClick={() => {
-              let id = document.getElementById("adminlist").value;
-              revokeAdmin(WorkspaceID, id);
+              let id = document.getElementById("userlist").value;
+              grantAdmin(WorkspaceID, id);
             }}
           >
             Submit
@@ -100,7 +101,7 @@ export const ManageWorkspace = (WorkspaceID) => {
           </div>
           <button
             className="bg-blue-500 text-white px-2 py-1 rounded-sm mt-3"
-            onClick={() => {
+            onClick={(e) => {
               let id = document.getElementById("adminlist").value;
               revokeAdmin(WorkspaceID, id);
             }}

@@ -98,7 +98,7 @@ export const NotificationDropdown = ({ UserID }) => {
               </li>
             )}
             {notification.map((n) => {
-              if (n.Type == "Workspace") {
+              if (n.Type == "Board") {
                 return (
                   <li>
                     <a
@@ -118,7 +118,7 @@ export const NotificationDropdown = ({ UserID }) => {
                     >
                       User <span className="text-blue-600">{n.Sender}</span>{" "}
                       sent you a invitation to{" "}
-                      <span className="text-blue-600">{n.WorkspaceName}</span>
+                      <span className="text-blue-600">{n.BoardName}</span>
                     </a>
                     <button
                       className="m-3 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
@@ -165,7 +165,7 @@ export const NotificationDropdown = ({ UserID }) => {
                     >
                       User <span className="text-blue-600">{n.Sender}</span>{" "}
                       sent you a invitation to{" "}
-                      <span className="text-blue-600">{n.BoardName}</span>
+                      <span className="text-blue-600">{n.WorkspaceName}</span>
                     </a>
                     <button
                       className="m-3 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
