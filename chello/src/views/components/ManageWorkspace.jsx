@@ -5,6 +5,7 @@ import {
   changeVisibility,
   grantAdmin,
   revokeAdmin,
+  removeMember,
 } from "../../controller/WorkspaceController";
 
 export const ManageWorkspace = (WorkspaceID) => {
@@ -63,6 +64,47 @@ export const ManageWorkspace = (WorkspaceID) => {
             onClick={() => {
               let id = document.getElementById("userlist").value;
               grantAdmin(WorkspaceID, id);
+            }}
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+      <form autoComplete="off">
+        <div className="mt-3">
+          <h1>Kick User</h1>
+          <div className="flex mt-2">
+            <div className="xl:w-96">
+              <select
+                id="kicklist"
+                className="form-select form-select-lg
+                                appearance-none
+                                block
+                                w-full
+                                px-4
+                                py-2
+                                text-xl
+                                font-normal
+                                text-gray-700
+                                bg-white bg-clip-padding bg-no-repeat
+                                border border-solid border-gray-300
+                                rounded
+                                transition
+                                ease-in-out
+                                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                aria-label=".form-select-lg example"
+              >
+                {users.map((u) => (
+                  <option value={u.id}>{u.username}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button
+            className="bg-blue-500 text-white px-2 py-1 rounded-sm mt-3"
+            onClick={() => {
+              let id = document.getElementById("kicklist").value;
+              removeMember(WorkspaceID, id);
             }}
           >
             Submit

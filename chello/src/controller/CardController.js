@@ -8,6 +8,7 @@ import {
   deleteDoc,
   getDocs,
   Timestamp,
+  getDoc,
 } from "firebase/firestore";
 import firebase from "firebase/compat/app";
 
@@ -132,8 +133,26 @@ export const DeleteCardLabel = async (boardId, labelId) => {
 };
 
 export const setCardDueDate = async (boardId, cardId, date) => {
+  const card = await getDoc(doc(db.getDB(), `boards/${boardId}/cards`, cardId));
+  console.log(card.data());
   await updateDoc(doc(db.getDB(), `boards/${boardId}/cards/${cardId}`), {
     DueDate: Timestamp.fromDate(date),
+  });
+  await addDoc(
+    collection(db.getDB(), `boards/${boardId}/cards/${cardId}/events`),
+    {
+      title: card.data().title,
+      allDay: true,
+      start: Timestamp.fromDate(date),
+      end: Timestamp.fromDate(date),
+    }
+  ).then(async (docRef) => {
+    await updateDoc(
+      doc(db.getDB(), `boards/${boardId}/cards/${cardId}/events`, docRef.id),
+      {
+        id: docRef.id,
+      }
+    );
   });
 };
 export const setCardReminderDate = async (boardId, cardId, date) => {

@@ -229,3 +229,14 @@ export const getVisibility = async (workspaceId) => {
   const document = await getDoc(docRef);
   console.log(document);
 };
+
+export const removeMember = async (workspaceId, userId) => {
+  const user = {
+    userid: doc(db.getDB(), "users", userId),
+    role: "user",
+  };
+  const docRef = doc(db.getDB(), "workspaces", workspaceId.WorkspaceID);
+  await updateDoc(docRef, {
+    users: firebase.firestore.FieldValue.arrayRemove(user),
+  });
+};
