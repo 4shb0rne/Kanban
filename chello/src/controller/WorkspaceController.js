@@ -218,8 +218,14 @@ export const revokeAdmin = async (workspaceId, userId) => {
 };
 
 export const changeVisibility = async (workspaceId, visiblityType) => {
-  const docRef = doc(db.getDB(), "workspaces", workspaceId);
+  const docRef = doc(db.getDB(), "workspaces", workspaceId.WorkspaceID);
   await updateDoc(docRef, {
     visiblitytype: visiblityType,
   });
+};
+
+export const getVisibility = async (workspaceId) => {
+  const docRef = doc(db.getDB(), "workspaces", workspaceId.WorkspaceID);
+  const document = await getDoc(docRef);
+  console.log(document);
 };

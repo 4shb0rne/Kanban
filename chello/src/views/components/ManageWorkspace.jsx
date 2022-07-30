@@ -10,10 +10,9 @@ import {
 export const ManageWorkspace = (WorkspaceID) => {
   const [users, setUsers] = useState([]);
   const [admins, setAdmins] = useState([]);
+
   useEffect(() => {
     fetch_users();
-  }, []);
-  useEffect(() => {
     fetch_admins();
   }, []);
   const fetch_users = async () => {
@@ -27,6 +26,7 @@ export const ManageWorkspace = (WorkspaceID) => {
 
   return (
     <div>
+      {WorkspaceID.WorkspaceID}
       <form autoComplete="off">
         <div>
           <h1>Grant Admin</h1>

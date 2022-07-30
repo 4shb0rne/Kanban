@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { BoardFactory } from "../factory/BoardFactory";
 import { Board } from "../model/Board";
-
+import firebase from "firebase/compat/app";
 export const useBoardsHomeAdmin = (userId) => {
   const [boards, setBoards] = useState(null);
   const fetch_boards = () => {
@@ -191,9 +191,84 @@ export const leaveBoard = async (boardId, userId) => {
   Board.leaveBoard(boardId, userId);
 };
 
-export const changeVisibility = async (workspaceId, boardId, visiblityType) => {
-  const docRef = doc(db.getDB(), `workspaces/${workspaceId}/`, boardId);
+export const changeVisibility = async (boardId, visiblityType) => {
+  const docRef = doc(db.getDB(), `boards`, boardId.boardId);
   await updateDoc(docRef, {
     visiblitytype: visiblityType,
+  });
+};
+
+export const getAdmins = async (boardId) => {
+  const docRef = doc(db.getDB(), "boards", boardId.boardId);
+  const documents = [];
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    for (let u of docSnap.data().users) {
+      if (u.role == "admin") {
+        const userSnap = await getDoc(u.userid);
+        documents.push({
+          id: userSnap.id,
+          ...userSnap.data(),
+        });
+      }
+    }
+  }
+
+  return documents;
+};
+
+export const getUsers = async (boardId) => {
+  const docRef = doc(db.getDB(), "boards", boardId.boardId);
+  const documents = [];
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    for (let u of docSnap.data().users) {
+      if (u.role == "user") {
+        const userSnap = await getDoc(u.userid);
+        documents.push({
+          id: userSnap.id,
+          ...userSnap.data(),
+        });
+      }
+    }
+  }
+  return documents;
+};
+
+export const grantAdmin = async (boardId, userId) => {
+  const user = {
+    userid: doc(db.getDB(), "users", userId),
+    role: "user",
+  };
+
+  const docRef = doc(db.getDB(), "workspaces", boardId.boardId);
+  await updateDoc(docRef, {
+    users: firebase.firestore.FieldValue.arrayRemove(user),
+  });
+  const admin = {
+    userid: doc(db.getDB(), "users", userId),
+    role: "admin",
+  };
+  await updateDoc(docRef, {
+    users: firebase.firestore.FieldValue.arrayUnion(admin),
+  });
+};
+
+export const revokeAdmin = async (boardId, userId) => {
+  const user = {
+    userid: doc(db.getDB(), "users", userId),
+    role: "user",
+  };
+  const admin = {
+    userid: doc(db.getDB(), "users", userId),
+    role: "admin",
+  };
+  const docRef = doc(db.getDB(), "workspaces", boardId.boardId);
+  await updateDoc(docRef, {
+    users: firebase.firestore.FieldValue.arrayRemove(admin),
+  });
+
+  await updateDoc(docRef, {
+    users: firebase.firestore.FieldValue.arrayUnion(user),
   });
 };

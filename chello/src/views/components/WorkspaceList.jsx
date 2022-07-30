@@ -14,6 +14,8 @@ const WorkspaceList = ({
 }) => {
   const [modal, setModal] = useState(false);
   const [manageModal, setManageModal] = useState(false);
+  const [workspaceId, setWorkspaceId] = useState("");
+  const [workspaceName, setWorkspaceName] = useState("");
   return (
     <div className="h-screen px-6 py-4 sm:py-20 sm:px-24">
       <div className="flex flex-col my-2">
@@ -54,32 +56,31 @@ const WorkspaceList = ({
         <div className="my-12">
           <h1 className="text-xl text-blue-900">Your Workspaces(Admin)</h1>
           <div className="flex flex-wrap mt-2">
+            <Modal
+              modal={modal}
+              setModal={setModal}
+              ariaText="Workspace Invitation"
+            >
+              <InviteWorkspaceMember
+                UserID={userId}
+                WorkspaceID={workspaceId}
+                WorkspaceName={workspaceName}
+                AdminName={name}
+              ></InviteWorkspaceMember>
+            </Modal>
+            <Modal
+              modal={manageModal}
+              setModal={setManageModal}
+              ariaText="Manage Workspace"
+            >
+              <ManageWorkspace WorkspaceID={workspaceId}></ManageWorkspace>
+            </Modal>
             {workspaces.map((w) => {
-              console.log(w.id);
               return (
                 <div
                   className="bg-white text-gray-700 mb-3 mr-4 py-4 px-6 rounded-sm shadow-md w-full sm:w-auto"
                   key={w.id}
                 >
-                  <Modal
-                    modal={modal}
-                    setModal={setModal}
-                    ariaText="Workspace Invitation"
-                  >
-                    <InviteWorkspaceMember
-                      UserID={userId}
-                      WorkspaceID={w.id}
-                      WorkspaceName={w.name}
-                      AdminName={name}
-                    ></InviteWorkspaceMember>
-                  </Modal>
-                  <Modal
-                    modal={manageModal}
-                    setModal={setManageModal}
-                    ariaText="Manage Workspace"
-                  >
-                    <ManageWorkspace WorkspaceID={w.id}></ManageWorkspace>
-                  </Modal>
                   <div className="flex items-center justify-between">
                     <Link to={`/workspace/${w.id}`}>
                       <h2 className="text-lg sm:text-2xl text-gray-700 hover:text-gray-900">
@@ -88,7 +89,11 @@ const WorkspaceList = ({
                     </Link>
                     <div
                       className="ml-6 mt-2 cursor-pointer"
-                      onClick={() => setModal(true)}
+                      onClick={() => {
+                        setModal(true);
+                        setWorkspaceId(w.id);
+                        setWorkspaceName(w.name);
+                      }}
                     >
                       <button
                         className="bg-green-500 text-white leading-tight uppercase rounded shadow-md hover:bg-green-600 
@@ -107,6 +112,7 @@ const WorkspaceList = ({
                     <button
                       onClick={() => {
                         setManageModal(true);
+                        setWorkspaceId(w.id);
                       }}
                     >
                       <Edit></Edit>

@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Bin, Add } from "./Icons";
+import { Bin, Add, Edit } from "./Icons";
 import { leaveWorkspace } from "../../controller/WorkspaceController";
 import { useState } from "react";
 import Modal from "./Modal";
 import { InviteBoardMember } from "./InviteBoardMember";
+import { ManageBoard } from "./ManageBoard";
 const BoardList = ({
   logOut,
   boards,
@@ -15,7 +16,10 @@ const BoardList = ({
   workspaceId,
 }) => {
   const [modal, setModal] = useState(false);
+  const [manageModal, setManageModal] = useState(false);
   let navigate = useNavigate();
+  const [boardId, setBoardId] = useState("");
+  const [boardName, setBoardName] = useState("");
   const removeBoard = (id) => {
     deleteBoard(id);
   };
@@ -65,24 +69,31 @@ const BoardList = ({
         <div className="my-12">
           <h1 className="text-xl text-blue-900">Your Boards(Admin)</h1>
           <div className="flex flex-wrap mt-2">
+            <Modal
+              modal={modal}
+              setModal={setModal}
+              ariaText="Board Invitation"
+            >
+              <InviteBoardMember
+                UserID={userId}
+                WorkspaceID={workspaceId}
+                BoardID={boardId}
+                BoardName={boardName}
+                AdminName={name}
+              ></InviteBoardMember>
+            </Modal>
+            <Modal
+              modal={manageModal}
+              setModal={setManageModal}
+              ariaText="Board Invitation"
+            >
+              <ManageBoard boardId={boardId}></ManageBoard>
+            </Modal>
             {boards.map((b) => (
               <div
                 className="bg-white text-gray-700 mb-3 mr-4 py-4 px-6 rounded-sm shadow-md w-full sm:w-auto"
                 key={b.id}
               >
-                <Modal
-                  modal={modal}
-                  setModal={setModal}
-                  ariaText="Board Invitation"
-                >
-                  <InviteBoardMember
-                    UserID={userId}
-                    WorkspaceID={workspaceId} 
-                    BoardID={b.id}
-                    BoardName={b.name}
-                    AdminName={name}
-                  ></InviteBoardMember>
-                </Modal>
                 {b.title}
                 <div className="flex items-center justify-between">
                   <Link to={`/board/${b.id}`}>
@@ -93,7 +104,11 @@ const BoardList = ({
 
                   <div
                     className="ml-6 mt-2 cursor-pointer"
-                    onClick={() => setModal(true)}
+                    onClick={() => {
+                      setModal(true);
+                      setBoardId(b.id);
+                      setBoardName(b.name);
+                    }}
                   >
                     <button
                       className="bg-green-500 text-white leading-tight uppercase rounded shadow-md hover:bg-green-600 
@@ -109,6 +124,14 @@ const BoardList = ({
                   >
                     <Bin />
                   </div>
+                  <button
+                    onClick={() => {
+                      setManageModal(true);
+                      setBoardId(b.id);
+                    }}
+                  >
+                    <Edit></Edit>
+                  </button>
                 </div>
               </div>
             ))}
