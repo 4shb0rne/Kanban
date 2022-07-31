@@ -87,7 +87,7 @@ const BoardList = ({
               setModal={setManageModal}
               ariaText="Board Invitation"
             >
-              <ManageBoard boardId={boardId}></ManageBoard>
+              <ManageBoard boardId={boardId} userId={userId}></ManageBoard>
             </Modal>
             {boards.map((b) => (
               <div

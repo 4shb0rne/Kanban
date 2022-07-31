@@ -272,3 +272,9 @@ export const revokeAdmin = async (boardId, userId) => {
     users: firebase.firestore.FieldValue.arrayUnion(user),
   });
 };
+
+export const moveBoard = async (workspaceId, boardId) => {
+  await updateDoc(doc(db.getDB(), "boards", boardId.boardId), {
+    workspace: doc(db.getDB(), "workspaces", workspaceId),
+  });
+};

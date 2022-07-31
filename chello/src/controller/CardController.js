@@ -138,25 +138,30 @@ export const setCardDueDate = async (boardId, cardId, date) => {
   await updateDoc(doc(db.getDB(), `boards/${boardId}/cards/${cardId}`), {
     DueDate: Timestamp.fromDate(date),
   });
-  await addDoc(
-    collection(db.getDB(), `boards/${boardId}/cards/${cardId}/events`),
-    {
-      title: card.data().title,
-      allDay: true,
-      start: Timestamp.fromDate(date),
-      end: Timestamp.fromDate(date),
-    }
-  ).then(async (docRef) => {
-    await updateDoc(
-      doc(db.getDB(), `boards/${boardId}/cards/${cardId}/events`, docRef.id),
-      {
-        id: docRef.id,
-      }
-    );
+  await addDoc(collection(db.getDB(), `boards/${boardId}/events`), {
+    title: card.data().title,
+    allDay: true,
+    start: Timestamp.fromDate(date),
+    end: Timestamp.fromDate(date),
+  }).then(async (docRef) => {
+    await updateDoc(doc(db.getDB(), `boards/${boardId}/events`, docRef.id), {
+      id: docRef.id,
+    });
   });
 };
 export const setCardReminderDate = async (boardId, cardId, date) => {
   await updateDoc(doc(db.getDB(), `boards/${boardId}/cards/${cardId}`), {
     ReminderDate: Timestamp.fromDate(date),
   });
+};
+
+export const getEvents = async (boardId) => {
+  let documents = [];
+  const query = await getDocs(
+    collection(db.getDB(), `boards/${boardId.boardId}/events`)
+  );
+  query.forEach((doc) => {
+    documents.push(doc.data());
+  });
+  return documents;
 };

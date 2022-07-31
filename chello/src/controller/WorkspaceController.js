@@ -240,3 +240,24 @@ export const removeMember = async (workspaceId, userId) => {
     users: firebase.firestore.FieldValue.arrayRemove(user),
   });
 };
+
+export const getAvailableWorkspace = async (userId) => {
+  const documents = [];
+  const user = {
+    userid: doc(db.getDB(), "users", userId),
+    role: "admin",
+  };
+  const workspacesquery = await getDocs(
+    query(
+      collection(db.getDB(), "workspaces"),
+      where("users", "array-contains", user)
+    )
+  );
+  workspacesquery.forEach((doc) => {
+    documents.push({
+      id: doc.id,
+      ...doc.data(),
+    });
+  });
+  return documents;
+};
