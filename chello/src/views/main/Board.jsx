@@ -9,7 +9,6 @@ import BoardListUser from "../components/BoardListUser";
 
 //kalo direload jadi error soalnya g dpt userIdnya
 export const Board = ({ userId, name }) => {
-  const [user] = useAuthState(auth.getAuth());
   let workspaceId = useParams();
   const [boards, fetchboards] = useBoards(userId, workspaceId);
   const [userboards, fetchuserboards] = useBoardsUser(userId, workspaceId);
