@@ -16,7 +16,7 @@ const Card = ({
 }) => {
     const [modal, setModal] = useState(false);
 
-    const theTask = allData.tasks[id];  
+    const theTask = allData.tasks[id];
 
     return (
         <div>
@@ -47,6 +47,9 @@ const Card = ({
                         <div className="w-full">
                             <h4 className="text-sm sm:text-base">
                                 {theTask.title}
+                            </h4>
+                            <h4 className="text-sm sm:text-base">
+                                {}
                             </h4>
                             <div className="flex mt-2 space-x-3 sm:space-x-5">
                                 {theTask.todos.length >= 1 && (
