@@ -5,9 +5,13 @@ import {
     addDoc,
     deleteDoc,
     getDoc,
+    getDocs,
+    query,
+    where,
 } from "firebase/firestore";
 import { db } from "../util/firebase-config";
 import firebase from "firebase/compat/app";
+import { async } from "@firebase/util";
 export class Workspace {
     constructor(userID, workspaceName) {
         this.userID = userID;
@@ -25,7 +29,21 @@ export class Workspace {
         });
     }
     static async deleteWorkspace(workspaceID) {
-        await deleteDoc(doc(db.getDB(), "workspaces", workspaceID));
+        const workspaceRef = doc(db.getDB(), "workspaces", workspaceID);
+        await getDocs(
+            query(
+                collection(db.getDB(), "boards"),
+                where("workspace", "==", workspaceRef),
+                where("status", "==", "open")
+            )
+        ).then(async (snap) => {
+            snap.forEach(async (w) => {
+                await updateDoc(doc(db.getDB(), "boards", w.id), {
+                    status: "closed",
+                });
+            });
+            await deleteDoc(workspaceRef);
+        });
     }
     static async leaveWorkspace(workspaceId, userId) {
         const admin = {

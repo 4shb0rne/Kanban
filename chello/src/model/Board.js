@@ -29,6 +29,7 @@ export class Board {
                 this.workspaceID.workspaceId
             ),
             visibilitytype: "public",
+            status: "open",
         }).then((board) => {
             setDoc(doc(db.getDB(), `boards/${board.id}/lists`, "columnOrder"), {
                 columnOrder: columnOrder,

@@ -27,7 +27,8 @@ export const useBoardsHomeAdmin = (userId) => {
                     getDocs(
                         query(
                             collection(db.getDB(), "boards"),
-                            where("users", "array-contains", userRef)
+                            where("users", "array-contains", userRef),
+                            where("status", "==", "open")
                         )
                     ).then((boardSnap) => {
                         const documents = [];
@@ -75,7 +76,8 @@ export const useBoards = (userId, workspaceId) => {
                         query(
                             collection(db.getDB(), "boards"),
                             where("users", "array-contains", userRef),
-                            where("workspace", "==", workspace)
+                            where("workspace", "==", workspace),
+                            where("status", "==", "open")
                         )
                     ).then((boardSnap) => {
                         const documents = [];
@@ -125,7 +127,8 @@ export const useBoardsUser = (userId, workspaceId) => {
                             collection(db.getDB(), "boards"),
                             where("users", "array-contains", userRef),
                             where("visibilitytype", "==", "memberonly"),
-                            where("workspace", "==", workspace)
+                            where("workspace", "==", workspace),
+                            where("status", "==", "open")
                         )
                     ).then((boardSnap) => {
                         boardSnap.forEach((b) => {
@@ -147,7 +150,8 @@ export const useBoardsUser = (userId, workspaceId) => {
                         query(
                             collection(db.getDB(), "boards"),
                             where("visibilitytype", "==", "public"),
-                            where("workspace", "==", workspace)
+                            where("workspace", "==", workspace),
+                            where("status", "==", "open")
                         )
                     ).then((boardSnap) => {
                         boardSnap.forEach((b) => {
@@ -302,4 +306,40 @@ export const getBoard = async (boardId) => {
     const docRef = doc(db.getDB(), "boards", boardId.boardId);
     const docSnap = await getDoc(docRef);
     return docSnap.data();
+};
+
+export const openBoard = async (boardId) => {
+    const docRef = doc(db.getDB(), "boards", boardId);
+    await updateDoc(docRef, {
+        status: "open",
+    });
+    window.location.reload();
+};
+
+export const closeBoard = async (boardId) => {
+    const docRef = doc(db.getDB(), "boards", boardId);
+    await updateDoc(docRef, {
+        status: "closed",
+    });
+    window.location.reload();
+};
+
+export const getClosedBoard = async (workspaceId) => {
+    const documents = [];
+    const workspaceRef = doc(db.getDB(), "workspaces", workspaceId);
+    await getDocs(
+        query(
+            collection(db.getDB(), "boards"),
+            where("workspace", "==", workspaceRef),
+            where("status", "==", "closed")
+        )
+    ).then((snap) => {
+        snap.forEach((b) => {
+            documents.push({
+                id: b.id,
+                ...b.data(),
+            });
+        });
+    });
+    return documents;
 };
