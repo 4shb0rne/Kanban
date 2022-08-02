@@ -32,7 +32,7 @@ export const AcceptInvitationBoard = async (
     BoardID,
     UserID
 ) => {
-    const ref = doc(db.getDB(), `workspaces/${WorkspaceID}`, BoardID);
+    const ref = doc(db.getDB(), `boards`, BoardID);
     await updateDoc(ref, {
         users: firebase.firestore.FieldValue.arrayUnion({
             userid: doc(db.getDB(), "users", UserID),
