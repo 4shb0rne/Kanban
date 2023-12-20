@@ -4,9 +4,9 @@ import { Login } from "./views/userauth/login";
 import { Register } from "./views/userauth/register";
 import { Profile } from "./views/userauth/profile";
 import { Layout } from "./views/main/layout";
-import Home from "./views/main/Home";
+import Home from "./views/main/home";
 import { useAuthState } from "react-firebase-hooks/auth";
-import Kanban from "./views/main/Kanban";
+import Kanban from "./views/main/kanban";
 import { auth } from "./util/firebase-config";
 import { Board } from "./views/main/Board";
 
